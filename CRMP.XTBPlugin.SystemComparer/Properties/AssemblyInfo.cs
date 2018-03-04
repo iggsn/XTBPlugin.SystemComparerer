@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("CRMP.XTBPlugin.SystemComparer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("CRMPartners")]
+[assembly: AssemblyCompany("CRM Partners AG")]
 [assembly: AssemblyProduct("CRMP.XTBPlugin.SystemComparer")]
 [assembly: AssemblyCopyright("Copyright © CRMPartners 2018")]
 [assembly: AssemblyTrademark("")]
