@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Tooling.Connector;
 using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
