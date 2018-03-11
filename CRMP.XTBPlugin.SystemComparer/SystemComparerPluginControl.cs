@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk.Query;
@@ -159,8 +160,12 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
-                    _systemComparer.RetrieveMetadata("Source");
-                    _systemComparer.RetrieveMetadata("Target");
+                    worker.ReportProgress(0, "Fetching Metadata from Source");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source);
+                    worker.ReportProgress(50, "Fetching Metadata from Target");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target);
+
+                    args.Result = _systemComparer;
                 },
                 PostWorkCallBack = (args) =>
                 {
@@ -169,12 +174,13 @@ namespace CRMP.XTBPlugin.SystemComparer
                         MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    var result = args.Result as EntityCollection;
+                    /*var result = args.Result as EntityCollection;
                     if (result != null)
                     {
                         MessageBox.Show($"Found {result.Entities.Count} accounts");
-                    }
-                }
+                    }*/
+                },
+                ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
         }
     }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -26,7 +23,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             _targetConnection = targetConnection;
         }
 
-        public void RetrieveMetadata(string type)
+        public void RetrieveMetadata(ConnectionType connectionType)
         {
             List<EntityMetadata> list = new List<EntityMetadata>();
 
@@ -36,9 +33,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 RetrieveAsIfPublished = false
             };
 
-            CrmServiceClient crmServiceClient = type == "Source"
-                ? _sourceConnection.GetCrmServiceClient()
-                : _targetConnection.GetCrmServiceClient();
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
 
             // Retrieve the MetaData.
             RetrieveAllEntitiesResponse response = (RetrieveAllEntitiesResponse)crmServiceClient.Execute(request);
@@ -48,13 +43,26 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 list.Add(entityMetadata);
             }
 
-            if (type == "Source")
+            if (connectionType == ConnectionType.Source)
             {
                 _sourceEntityMetadatas = list;
             }
             else
             {
                 _targetEntityMetadatas = list;
+            }
+        }
+
+        private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)
+        {
+            switch (connectionType)
+            {
+                case ConnectionType.Source:
+                    return _sourceConnection.GetCrmServiceClient(forceNew);
+                case ConnectionType.Target:
+                    return _targetConnection.GetCrmServiceClient(forceNew);
+                default:
+                    throw new Exception("Something wnt wrong");
             }
         }
     }
