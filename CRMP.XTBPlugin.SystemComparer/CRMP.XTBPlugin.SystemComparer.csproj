@@ -113,6 +113,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\SystemComparer.cs" />
     <Compile Include="SystemComparerPlugin.cs" />
     <Compile Include="SystemComparerPluginControl.cs">
       <SubType>UserControl</SubType>
@@ -127,7 +128,19 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SystemComparerPluginControl.resx">
+      <DependentUpon>SystemComparerPluginControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug (
+  IF NOT EXIST Plugins mkdir Plugins
+  move /Y CRMP.XTBPlugin.*.dll Plugins
+  move /Y CRMP.XTBPlugin.*.pdb Plugins
+)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

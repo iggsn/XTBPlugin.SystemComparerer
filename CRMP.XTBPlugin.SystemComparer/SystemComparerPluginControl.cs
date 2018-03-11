@@ -1,30 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
+using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Tooling.Connector;
+using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : PluginControlBase
+    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl
     {
+
+        private ConnectionDetail _sourceConnection;
+        private ConnectionDetail _targetConnection;
+
         private Settings mySettings;
+
+        public event EventHandler OnRequestConnection;
+
+        private Logic.SystemComparer _systemComparer;
 
         public SystemComparerPluginControl()
         {
             InitializeComponent();
+            _sourceConnection = ConnectionDetail;
+
         }
 
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            ShowInfoNotification("This is a notification that can lead to XrmToolBox repository", new Uri("http://github.com/MscrmTools/XrmToolBox"));
+            /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
+                new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
@@ -42,40 +54,6 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void tsbClose_Click(object sender, EventArgs e)
         {
             CloseTool();
-        }
-
-        private void tsbSample_Click(object sender, EventArgs e)
-        {
-            // The ExecuteMethod method handles connecting to an
-            // organization if XrmToolBox is not yet connected
-            ExecuteMethod(GetAccounts);
-        }
-
-        private void GetAccounts()
-        {
-            WorkAsync(new WorkAsyncInfo
-            {
-                Message = "Getting accounts",
-                Work = (worker, args) =>
-                {
-                    args.Result = Service.RetrieveMultiple(new QueryExpression("account")
-                    {
-                        TopCount = 50
-                    });
-                },
-                PostWorkCallBack = (args) =>
-                {
-                    if (args.Error != null)
-                    {
-                        MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    var result = args.Result as EntityCollection;
-                    if (result != null)
-                    {
-                        MessageBox.Show($"Found {result.Entities.Count} accounts");
-                    }
-                }
-            });
         }
 
         /// <summary>
@@ -98,6 +76,106 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
             LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
+        }
+
+        private void buttonSourceChange_Click(object sender, EventArgs e)
+        {
+            if (OnRequestConnection != null)
+            {
+                var arg = new RequestConnectionEventArgs
+                {
+                    ActionName = "SourceOrganization",
+                    Control = this
+                };
+                OnRequestConnection(this, arg);
+            }
+        }
+
+        private void buttonChangeTarget_Click(object sender, EventArgs e)
+        {
+            if (OnRequestConnection != null)
+            {
+                var arg = new RequestConnectionEventArgs
+                {
+                    ActionName = "TargetOrganization",
+                    Control = this
+                };
+                OnRequestConnection(this, arg);
+            }
+        }
+
+        private void SetConnectionLabel(ConnectionDetail detail, string serviceType)
+        {
+            switch (serviceType)
+            {
+                case "Source":
+                    labelSourceName.Text = detail.ConnectionName;
+                    labelSourceName.ForeColor = Color.Green;
+                    break;
+
+                case "Target":
+                    labelTargetName.Text = detail.ConnectionName;
+                    labelTargetName.ForeColor = Color.Green;
+                    break;
+            }
+        }
+
+        public void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
+            string actionName = "", object parameter = null)
+        {
+            if (actionName == "TargetOrganization")
+            {
+                _targetConnection = connectionDetail;
+                SetConnectionLabel(connectionDetail, "Target");
+            }
+            else
+            {
+                _sourceConnection = connectionDetail;
+                SetConnectionLabel(connectionDetail, "Source");
+            }
+
+            if (_targetConnection != null && _sourceConnection != null)
+            {
+                tbbLoadMetadata.Enabled = true;
+            }
+            else
+            {
+                tbbLoadMetadata.Enabled = false;
+            }
+        }
+
+        private void tbbLoadMetadata_Click(object sender, EventArgs e)
+        {
+            LoadEntites();
+            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
+        }
+
+        private void LoadEntites()
+        {
+            _systemComparer = new Logic.SystemComparer(_sourceConnection, _targetConnection);
+
+            WorkAsync(new WorkAsyncInfo
+            {
+                Message = "Getting Metadata",
+                Work = (worker, args) =>
+                {
+                    _systemComparer.RetrieveMetadata("Source");
+                    _systemComparer.RetrieveMetadata("Target");
+                },
+                PostWorkCallBack = (args) =>
+                {
+                    if (args.Error != null)
+                    {
+                        MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    var result = args.Result as EntityCollection;
+                    if (result != null)
+                    {
+                        MessageBox.Show($"Found {result.Entities.Count} accounts");
+                    }
+                }
+            });
         }
     }
 }
