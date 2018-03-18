@@ -168,6 +168,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                         MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
+                    dataGrid1.DataSource = _systemComparer.CreateDataSet().Tables[0];
                     /*var result = args.Result as EntityCollection;
                     if (result != null)
                     {

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -39,8 +40,12 @@
             this.buttonChangeSource = new System.Windows.Forms.Button();
             this.labelTarget = new System.Windows.Forms.Label();
             this.labelSource = new System.Windows.Forms.Label();
+            this.dataGrid1 = new System.Windows.Forms.DataGrid();
+            this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -149,10 +154,24 @@
             this.labelSource.TabIndex = 0;
             this.labelSource.Text = "Source Environment:";
             // 
+            // dataGrid1
+            // 
+            this.dataGrid1.DataMember = "";
+            this.dataGrid1.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+            this.dataGrid1.Location = new System.Drawing.Point(3, 135);
+            this.dataGrid1.Name = "dataGrid1";
+            this.dataGrid1.Size = new System.Drawing.Size(901, 287);
+            this.dataGrid1.TabIndex = 7;
+            // 
+            // systemComparerBindingSource
+            // 
+            this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.dataGrid1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "SystemComparerPluginControl";
@@ -162,6 +181,8 @@
             this.toolStripMenu.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,5 +200,7 @@
         private System.Windows.Forms.Label labelSource;
         private System.Windows.Forms.Label labelTargetName;
         private System.Windows.Forms.Label labelSourceName;
+        private System.Windows.Forms.BindingSource systemComparerBindingSource;
+        private System.Windows.Forms.DataGrid dataGrid1;
     }
 }
