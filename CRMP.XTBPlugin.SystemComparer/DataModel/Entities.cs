@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web.UI;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using Microsoft.Xrm.Sdk.Metadata;
 
@@ -12,15 +11,19 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
         private Dictionary<string, EntityMetadata> _sourceEntities;
         private Dictionary<string, EntityMetadata> _targetEntities;
 
-        private DataTable _dataTable;
+        private DataTable _entityDataTable;
 
         private IEnumerable<KeyValuePair<string, EntityMetadata>> _intersect;
+
+        internal Attributes _attributes;
 
 
         public Entities()
         {
             _sourceEntities = new Dictionary<string, EntityMetadata>();
             _targetEntities = new Dictionary<string, EntityMetadata>();
+
+            _attributes = new Attributes();
         }
 
         internal void Add(EntityMetadata entityMetadata, ConnectionType connectionType = ConnectionType.Source)
@@ -33,6 +36,8 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
             {
                 _targetEntities.Add(entityMetadata.LogicalName, entityMetadata);
             }
+
+            _attributes.Add(entityMetadata, connectionType);
         }
 
         private bool IsInBoth(EntityMetadata entityMetadata)
@@ -48,16 +53,27 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
 
         internal DataTable GetDataTable()
         {
-            if (_dataTable == null)
+            if (_entityDataTable == null)
             {
-                _dataTable = InitializeDataTableWithHeaders();
+                _entityDataTable = InitializeDataTableWithHeaders();
             }
 
-            if (_dataTable.Rows.Count == 0)
+            if (_entityDataTable.Rows.Count == 0)
             {
+                /*Parallel.ForEach(_sourceEntities.Values.AsEnumerable(), entityMetadata =>
+                {
+                    _entityDataTable.Rows.Add(
+                        entityMetadata.DisplayName.UserLocalizedLabel == null ? string.Empty : entityMetadata.DisplayName.UserLocalizedLabel.Label,
+                        entityMetadata.SchemaName,
+                        entityMetadata.LogicalName,
+                        true,
+                        IsInBoth(entityMetadata),
+                        false
+                    );
+                });*/
                 foreach (EntityMetadata entityMetadata in _sourceEntities.Values)
                 {
-                    _dataTable.Rows.Add(
+                    _entityDataTable.Rows.Add(
                         entityMetadata.DisplayName.UserLocalizedLabel == null ? string.Empty : entityMetadata.DisplayName.UserLocalizedLabel.Label,
                         entityMetadata.SchemaName,
                         entityMetadata.LogicalName,
@@ -71,7 +87,7 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
                 {
                     if (!IsInBoth(entityMetadata))
                     {
-                        _dataTable.Rows.Add(
+                        _entityDataTable.Rows.Add(
                             entityMetadata.DisplayName.UserLocalizedLabel == null ? string.Empty : entityMetadata.DisplayName.UserLocalizedLabel.Label,
                             entityMetadata.SchemaName,
                             entityMetadata.LogicalName,
@@ -83,12 +99,12 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
                 }
             }
 
-            return _dataTable;
+            return _entityDataTable;
         }
 
         private DataTable InitializeDataTableWithHeaders()
         {
-            DataTable newTable = new DataTable("entites");
+            DataTable newTable = new DataTable("entities");
             newTable.Columns.Add("DisplayName");
             newTable.Columns.Add("SchemaName");
             newTable.Columns.Add("LogicalName");

@@ -27,7 +27,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         {
             RetrieveAllEntitiesRequest request = new RetrieveAllEntitiesRequest()
             {
-                EntityFilters = EntityFilters.Entity,
+                EntityFilters = EntityFilters.Attributes,
                 RetrieveAsIfPublished = false
             };
 
@@ -38,7 +38,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
             foreach (EntityMetadata entityMetadata in response.EntityMetadata)
             {
-                _entitiesModel.Add(entityMetadata, connectionType);
+                if (entityMetadata.LogicalName == "account" || entityMetadata.LogicalName == "contact")
+                    _entitiesModel.Add(entityMetadata, connectionType);
             }
         }
 
@@ -60,6 +61,13 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             DataSet dataSet = new DataSet();
 
             dataSet.Tables.Add(_entitiesModel.GetDataTable());
+            dataSet.Tables.Add(_entitiesModel._attributes.GetDataTable());
+
+            DataRelation relation = new DataRelation("EntityAttributes",
+                  dataSet.Tables["entities"].Columns["LogicalName"],
+                  dataSet.Tables["attributes"].Columns["EntityLogicalName"]);
+
+            dataSet.Relations.Add(relation);
 
             return dataSet;
         }
