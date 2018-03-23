@@ -154,10 +154,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
-                    worker.ReportProgress(0, "Fetching Metadata from Source");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source);
-                    worker.ReportProgress(50, "Fetching Metadata from Target");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target);
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
