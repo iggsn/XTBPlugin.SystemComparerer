@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
@@ -16,8 +15,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
     class SystemComparer
     {
         //private Entities _entitiesModel;
-        private CustomizationRoot _sourceCustomizationRoot;
-        private CustomizationRoot _targetCustomizationRoot;
+        internal CustomizationRoot _sourceCustomizationRoot;
+        internal CustomizationRoot _targetCustomizationRoot;
 
         private readonly ConnectionDetail _sourceConnection;
         private readonly ConnectionDetail _targetConnection;
@@ -39,9 +38,11 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
-            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Attributes);
+            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Entity);
 
-            reportProgress(0, $"Processing Entity Metadata from {connectionType.ToString()}");
+            customzationRoot.EntitiesRaw = entitiesMetadata;
+
+            /*reportProgress(0, $"Processing Entity Metadata from {connectionType.ToString()}");
 
             foreach (EntityMetadata entityMetadata in entitiesMetadata)
             {
@@ -76,7 +77,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             reportProgress(0, $"Retrieving and processing Forms from {connectionType.ToString()}");
             ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
 
-            crmServiceClient.RetrieveMultiple(query);
+            crmServiceClient.RetrieveMultiple(query);*/
         }
 
         private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)

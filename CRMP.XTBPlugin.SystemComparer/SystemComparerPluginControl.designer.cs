@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SystemComparerPluginControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -40,11 +41,13 @@
             this.buttonChangeSource = new System.Windows.Forms.Button();
             this.labelTarget = new System.Windows.Forms.Label();
             this.labelSource = new System.Windows.Forms.Label();
-            this.dataGrid1 = new System.Windows.Forms.DataGrid();
+            this.comparisonListView = new System.Windows.Forms.ListView();
+            this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
             this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -154,27 +157,53 @@
             this.labelSource.TabIndex = 0;
             this.labelSource.Text = "Source Environment:";
             // 
-            // dataGrid1
+            // comparisonListView
             // 
-            this.dataGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.comparisonListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGrid1.DataMember = "";
-            this.dataGrid1.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-            this.dataGrid1.Location = new System.Drawing.Point(3, 135);
-            this.dataGrid1.Name = "dataGrid1";
-            this.dataGrid1.Size = new System.Drawing.Size(901, 287);
-            this.dataGrid1.TabIndex = 7;
+            this.comparisonListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColumnHeader});
+            this.comparisonListView.FullRowSelect = true;
+            this.comparisonListView.GridLines = true;
+            this.comparisonListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.comparisonListView.HideSelection = false;
+            this.comparisonListView.Location = new System.Drawing.Point(3, 134);
+            this.comparisonListView.Name = "comparisonListView";
+            this.comparisonListView.Size = new System.Drawing.Size(901, 288);
+            this.comparisonListView.SmallImageList = this.DifferenceList;
+            this.comparisonListView.StateImageList = this.TreeImagesList;
+            this.comparisonListView.TabIndex = 0;
+            this.comparisonListView.UseCompatibleStateImageBehavior = false;
+            this.comparisonListView.View = System.Windows.Forms.View.Details;
+            this.comparisonListView.Click += new System.EventHandler(this.comparisonListView_Click);
+            // 
+            // nameColumnHeader
+            // 
+            this.nameColumnHeader.Text = "Name";
+            // 
+            // TreeImagesList
+            // 
+            this.TreeImagesList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeImagesList.ImageStream")));
+            this.TreeImagesList.TransparentColor = System.Drawing.Color.Transparent;
+            this.TreeImagesList.Images.SetKeyName(0, "maximize.png");
+            this.TreeImagesList.Images.SetKeyName(1, "minimize.png");
             // 
             // systemComparerBindingSource
             // 
             this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
+            // DifferenceList
+            // 
+            this.DifferenceList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("DifferenceList.ImageStream")));
+            this.DifferenceList.TransparentColor = System.Drawing.Color.Transparent;
+            this.DifferenceList.Images.SetKeyName(0, "green.png");
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.dataGrid1);
+            this.Controls.Add(this.comparisonListView);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "SystemComparerPluginControl";
@@ -184,7 +213,6 @@
             this.toolStripMenu.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGrid1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -204,6 +232,9 @@
         private System.Windows.Forms.Label labelTargetName;
         private System.Windows.Forms.Label labelSourceName;
         private System.Windows.Forms.BindingSource systemComparerBindingSource;
-        private System.Windows.Forms.DataGrid dataGrid1;
+        private System.Windows.Forms.ListView comparisonListView;
+        private System.Windows.Forms.ColumnHeader nameColumnHeader;
+        private System.Windows.Forms.ImageList TreeImagesList;
+        private System.Windows.Forms.ImageList DifferenceList;
     }
 }
