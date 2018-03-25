@@ -44,7 +44,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
                         if (type == typeof(EntityMetadata))
                         {
-                            name = ((EntityMetadata) source).LogicalName;
+                            name = ((EntityMetadata)source).LogicalName;
                         }
                         else
                         {
@@ -59,11 +59,11 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     if (IsSimpleType(type))
                     {
                         // for simple types just compare values
-                       /* if (!Object.Equals(source, target))
-                        {
-                            originalParent.IsDifferent = true;
-                            parent.IsDifferent = true;
-                        }*/
+                        /* if (!Object.Equals(source, target))
+                         {
+                             originalParent.IsDifferent = true;
+                             parent.IsDifferent = true;
+                         }*/
                     }
                     else if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
@@ -125,8 +125,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             // or target.
             SynchronizeArraysByIdentity(ref sourceArray, ref targetArray);
 
-            int sourceLength = sourceArray == null ? 0 : sourceArray.Length;
-            int targetLength = targetArray == null ? 0 : targetArray.Length;
+            int sourceLength = sourceArray?.Length ?? 0;
+            int targetLength = targetArray?.Length ?? 0;
 
             for (int i = 0; i < Math.Max(sourceLength, targetLength); i++)
             {
@@ -144,7 +144,22 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         {
             if (enumerable == null) return null;
             if (enumerable.GetType().IsArray) return (Array)enumerable;
-            return enumerable.Cast<Object>().ToArray();
+
+            Type elementType = enumerable.GetType().GetGenericArguments().Any() ? enumerable.GetType().GetGenericArguments()[0] : null;
+
+            if (elementType != null)
+            {
+
+                switch (elementType.Name)
+                {
+                    case "EntityMetadata":
+                    {
+                        return enumerable.Cast<EntityMetadata>().ToArray();
+                    }
+                }
+            }
+
+            return enumerable.Cast<object>().ToArray();
         }
 
         private static void SynchronizeArraysByIdentity(ref Array source, ref Array target)
@@ -153,18 +168,16 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
             // Only proceed if the array elements implement IIdentifiable.
             Type elementType = (source ?? target).GetType().GetElementType();
-            if (!typeof(IIdentifiable).IsAssignableFrom(elementType)) return;
+            if (!typeof(EntityMetadata).IsAssignableFrom(elementType)) return;
 
-            IIdentifiable[] sourceIdentities = source == null ? new IIdentifiable[0] :
-                source.Cast<IIdentifiable>().ToArray();
+            EntityMetadata[] sourceIdentities = source?.Cast<EntityMetadata>().ToArray() ?? new EntityMetadata[0];
 
-            IIdentifiable[] targetIdentities = target == null ? new IIdentifiable[0] :
-                target.Cast<IIdentifiable>().ToArray();
+            EntityMetadata[] targetIdentities = target?.Cast<EntityMetadata>().ToArray() ?? new EntityMetadata[0];
 
             // create a list of combined entities to determine the order by 
             // which both lists will be sorted
-            string[] combinedIdentities = sourceIdentities.Select(i => i.Identity)
-                .Union(targetIdentities.Select(i => i.Identity))
+            string[] combinedIdentities = sourceIdentities.Select(i => i.LogicalName)
+                .Union(targetIdentities.Select(i => i.LogicalName))
                 .OrderBy(s => s)
                 .ToArray();
 
@@ -178,18 +191,13 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         /// <param name="identityKeys">The identity keys.</param>
         /// <param name="array">The array.</param>
         /// <returns>The sorted array.</returns>
-        private static Array SortAndPad(string[] identityKeys, IIdentifiable[] array)
+        private static Array SortAndPad(string[] identityKeys, EntityMetadata[] array)
         {
             if (array == null) return null;
 
             return identityKeys
-                .Select(k => array.FirstOrDefault(i => i.Identity == k))
+                .Select(k => array.FirstOrDefault(i => i.LogicalName == k))
                 .ToArray();
         }
-    }
-
-    public interface IIdentifiable
-    {
-        string Identity { get; }
     }
 }
