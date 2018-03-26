@@ -42,28 +42,33 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     {
                         string name;
 
-                        if (type == typeof(EntityMetadata))
+                        switch (type.Name)
                         {
-                            name = ((EntityMetadata)source).LogicalName;
-                        }
-                        else
-                        {
-                            name = "something Else";
+                            case "EntityMetadata":
+                            {
+                                name = ((EntityMetadata) source).LogicalName;
+                                break;
+                            }
+                            default:
+                                name = type.Name;
+                                break;
                         }
 
-                        parent = new MetadataComparison(name, source, target);
-                        parent.ParentProperty = prop;
+                        parent = new MetadataComparison(name, source, target)
+                        {
+                            ParentProperty = prop
+                        };
                         originalParent.Children.Add(parent);
                     }
 
                     if (IsSimpleType(type))
                     {
                         // for simple types just compare values
-                        /* if (!Object.Equals(source, target))
+                         if (!Equals(source, target))
                          {
                              originalParent.IsDifferent = true;
                              parent.IsDifferent = true;
-                         }*/
+                         }
                     }
                     else if (typeof(IEnumerable).IsAssignableFrom(type))
                     {

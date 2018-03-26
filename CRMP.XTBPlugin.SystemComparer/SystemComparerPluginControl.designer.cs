@@ -43,9 +43,13 @@
             this.labelSource = new System.Windows.Forms.Label();
             this.comparisonListView = new System.Windows.Forms.ListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
             this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
             this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
+            this.unchangedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.changedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.notInSourceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.notInTargetColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
@@ -163,7 +167,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comparisonListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.nameColumnHeader});
+            this.nameColumnHeader,
+            this.unchangedColumnHeader,
+            this.changedColumnHeader,
+            this.notInSourceColumnHeader,
+            this.notInTargetColumnHeader});
             this.comparisonListView.FullRowSelect = true;
             this.comparisonListView.GridLines = true;
             this.comparisonListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -181,6 +189,13 @@
             // nameColumnHeader
             // 
             this.nameColumnHeader.Text = "Name";
+            this.nameColumnHeader.Width = 300;
+            // 
+            // DifferenceList
+            // 
+            this.DifferenceList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("DifferenceList.ImageStream")));
+            this.DifferenceList.TransparentColor = System.Drawing.Color.Transparent;
+            this.DifferenceList.Images.SetKeyName(0, "green.png");
             // 
             // TreeImagesList
             // 
@@ -193,11 +208,29 @@
             // 
             this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
-            // DifferenceList
+            // unchangedColumnHeader
             // 
-            this.DifferenceList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("DifferenceList.ImageStream")));
-            this.DifferenceList.TransparentColor = System.Drawing.Color.Transparent;
-            this.DifferenceList.Images.SetKeyName(0, "green.png");
+            this.unchangedColumnHeader.Text = "UnChanged";
+            this.unchangedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.unchangedColumnHeader.Width = 100;
+            // 
+            // changedColumnHeader
+            // 
+            this.changedColumnHeader.Text = "Changed";
+            this.changedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.changedColumnHeader.Width = 100;
+            // 
+            // notInSourceColumnHeader
+            // 
+            this.notInSourceColumnHeader.Text = "Not in Source";
+            this.notInSourceColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.notInSourceColumnHeader.Width = 120;
+            // 
+            // notInTargetColumnHeader
+            // 
+            this.notInTargetColumnHeader.Text = "Not in Target";
+            this.notInTargetColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.notInTargetColumnHeader.Width = 100;
             // 
             // SystemComparerPluginControl
             // 
@@ -236,5 +269,9 @@
         private System.Windows.Forms.ColumnHeader nameColumnHeader;
         private System.Windows.Forms.ImageList TreeImagesList;
         private System.Windows.Forms.ImageList DifferenceList;
+        private System.Windows.Forms.ColumnHeader unchangedColumnHeader;
+        private System.Windows.Forms.ColumnHeader changedColumnHeader;
+        private System.Windows.Forms.ColumnHeader notInSourceColumnHeader;
+        private System.Windows.Forms.ColumnHeader notInTargetColumnHeader;
     }
 }

@@ -204,6 +204,15 @@ namespace CRMP.XTBPlugin.SystemComparer
                 IndentCount = parentItem?.IndentCount + 1 ?? 0
             };
 
+            object obj = customizationRoot.SourceValue ?? customizationRoot.TargetValue;
+            if (obj != null && customizationRoot.Children.Count > 0)
+            {
+                item.SubItems.Add(customizationRoot.GetUnchangedCount().ToString());
+                item.SubItems.Add(customizationRoot.GetChangedCount().ToString());
+                item.SubItems.Add(customizationRoot.GetMissingInSourceCount().ToString());
+                item.SubItems.Add(customizationRoot.GetMissingInSourceCount().ToString());
+            }
+
             comparisonListView.Items.Insert(parentItem?.Index + 1 ?? 0, item);
         }
 
