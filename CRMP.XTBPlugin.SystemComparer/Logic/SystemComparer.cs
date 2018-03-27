@@ -38,7 +38,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
-            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Entity);
+            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Attributes);
 
             customzationRoot.EntitiesRaw = entitiesMetadata;
 

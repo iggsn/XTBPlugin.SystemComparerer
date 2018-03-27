@@ -43,13 +43,13 @@
             this.labelSource = new System.Windows.Forms.Label();
             this.comparisonListView = new System.Windows.Forms.ListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
-            this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
-            this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.unchangedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.changedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.notInSourceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.notInTargetColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
+            this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
+            this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
@@ -191,23 +191,6 @@
             this.nameColumnHeader.Text = "Name";
             this.nameColumnHeader.Width = 300;
             // 
-            // DifferenceList
-            // 
-            this.DifferenceList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("DifferenceList.ImageStream")));
-            this.DifferenceList.TransparentColor = System.Drawing.Color.Transparent;
-            this.DifferenceList.Images.SetKeyName(0, "green.png");
-            // 
-            // TreeImagesList
-            // 
-            this.TreeImagesList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeImagesList.ImageStream")));
-            this.TreeImagesList.TransparentColor = System.Drawing.Color.Transparent;
-            this.TreeImagesList.Images.SetKeyName(0, "maximize.png");
-            this.TreeImagesList.Images.SetKeyName(1, "minimize.png");
-            // 
-            // systemComparerBindingSource
-            // 
-            this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
-            // 
             // unchangedColumnHeader
             // 
             this.unchangedColumnHeader.Text = "UnChanged";
@@ -231,6 +214,26 @@
             this.notInTargetColumnHeader.Text = "Not in Target";
             this.notInTargetColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.notInTargetColumnHeader.Width = 100;
+            // 
+            // DifferenceList
+            // 
+            this.DifferenceList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("DifferenceList.ImageStream")));
+            this.DifferenceList.TransparentColor = System.Drawing.Color.Transparent;
+            this.DifferenceList.Images.SetKeyName(0, "green.png");
+            this.DifferenceList.Images.SetKeyName(1, "yellow.png");
+            this.DifferenceList.Images.SetKeyName(2, "notinsource.png");
+            this.DifferenceList.Images.SetKeyName(3, "notintarget.png");
+            // 
+            // TreeImagesList
+            // 
+            this.TreeImagesList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeImagesList.ImageStream")));
+            this.TreeImagesList.TransparentColor = System.Drawing.Color.Transparent;
+            this.TreeImagesList.Images.SetKeyName(0, "maximize.png");
+            this.TreeImagesList.Images.SetKeyName(1, "minimize.png");
+            // 
+            // systemComparerBindingSource
+            // 
+            this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
             // SystemComparerPluginControl
             // 

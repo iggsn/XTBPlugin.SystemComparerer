@@ -15,6 +15,13 @@ namespace CRMP.XTBPlugin.SystemComparer
 {
     public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl
     {
+        const int StateImageIndexDashPlus = 0;
+        const int StateImageIndexDashMinus = 1;
+
+        const int DifferenceImageIndexUnchanged = 0;
+        const int DifferenceImageIndexChanged = 1;
+        const int DifferenceImageIndexNotInSource = 2;
+        const int DifferenceImageIndexNotInTarget = 3;
 
         private ConnectionDetail _sourceConnection;
         private ConnectionDetail _targetConnection;
@@ -198,9 +205,9 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 Text = customizationRoot.Name,
                 Checked = false,
-                StateImageIndex = customizationRoot.Children.Count > 0 ? 0 : -1,
+                StateImageIndex = customizationRoot.Children.Count > 0 ? StateImageIndexDashPlus : -1,
                 Tag = customizationRoot,
-                ImageIndex = 0,
+                ImageIndex = GetImageIndex(customizationRoot),
                 IndentCount = parentItem?.IndentCount + 1 ?? 0
             };
 
@@ -214,6 +221,26 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
 
             comparisonListView.Items.Insert(parentItem?.Index + 1 ?? 0, item);
+        }
+
+        private int GetImageIndex(MetadataComparison metadataComparison)
+        {
+            if (metadataComparison.IsDifferent)
+            {
+                if (metadataComparison.SourceValue == null)
+                {
+                    return DifferenceImageIndexNotInSource;
+                }
+
+                if (metadataComparison.TargetValue == null)
+                {
+                    return DifferenceImageIndexNotInTarget;
+                }
+
+                return DifferenceImageIndexChanged;
+            }
+
+            return DifferenceImageIndexUnchanged;
         }
 
         private void comparisonListView_Click(object sender, EventArgs e)
@@ -238,7 +265,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     }
 
                     item.Checked = false;
-                    item.StateImageIndex = 0;
+                    item.StateImageIndex = StateImageIndexDashPlus;
                 }
             }
             else
@@ -252,7 +279,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                         {
                             AddItem(childComparison, item);
                         }
-                        item.StateImageIndex = 1;
+                        item.StateImageIndex = StateImageIndexDashMinus;
                         item.Checked = true;
                     }
                 }
