@@ -217,7 +217,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                 item.SubItems.Add(customizationRoot.GetUnchangedCount().ToString());
                 item.SubItems.Add(customizationRoot.GetChangedCount().ToString());
                 item.SubItems.Add(customizationRoot.GetMissingInSourceCount().ToString());
-                item.SubItems.Add(customizationRoot.GetMissingInSourceCount().ToString());
+                item.SubItems.Add(customizationRoot.GetMissingInTargetCount().ToString());
             }
 
             comparisonListView.Items.Insert(parentItem?.Index + 1 ?? 0, item);

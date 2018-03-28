@@ -7,11 +7,11 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
 {
     public class MetadataComparison
     {
-        public String Name { get; set; }
+        public string Name { get; set; }
 
-        public Object SourceValue { get; set; }
+        public object SourceValue { get; set; }
 
-        public Object TargetValue { get; set; }
+        public object TargetValue { get; set; }
 
         public bool IsDifferent { get; set; }
 
