@@ -46,16 +46,32 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         {
                             case "EntityMetadata":
                             {
-                                name = ((EntityMetadata)source).LogicalName;
+                                name = ((EntityMetadata)(source ?? target)).LogicalName;
                                 break;
                             }
                             case "AttributeMetadata":
-                            {
-                                name = ((AttributeMetadata)source).LogicalName;
+                            case "StringAttributeMetadata":
+                            case "MemoAttributeMetadata":
+                            case "DoubleAttributeMetadata":
+                            case "IntegrationAttributeMetadata":
+                            case "MoneyAttributeMetadata":
+                            case "DateTimeAttributeMetadata":
+                            case "LookupAttributeMetadata":
+                            case "DecimalAttributeMetadata":
+                            case "PicklistAttributeMetadata":
+                            case "IntegerAttributeMetadata":
+                            case "BooleanAttributeMetadata":
+                            case "ImageAttributeMetadata":
+                            case "BigIntAttributeMetadata":
+                            case "EntityNameAttributeMetadata":
+                            case "StateAttributeMetadata":
+                            case "StatusAttributeMetadata":
+                                {
+                                name = ((AttributeMetadata)(source ?? target)).LogicalName;
                                 break;
                                 }
                             default:
-                                name = prop.Name;
+                                name = $"{prop.Name} ({type.Name})";
                                 break;
                         }
 
