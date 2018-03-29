@@ -7,6 +7,7 @@ using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk;
+using Newtonsoft.Json;
 using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
@@ -275,6 +276,18 @@ namespace CRMP.XTBPlugin.SystemComparer
                         item.Checked = true;
                     }
                 }
+            }
+        }
+
+        private void comparisonListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (e.IsSelected)
+            {
+                MetadataComparison comparison = (MetadataComparison)e.Item.Tag;
+
+                var sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented, new JsonSerializerSettings() { MaxDepth = 1 });
+
+
             }
         }
     }

@@ -196,6 +196,7 @@
             this.comparisonListView.TabIndex = 0;
             this.comparisonListView.UseCompatibleStateImageBehavior = false;
             this.comparisonListView.View = System.Windows.Forms.View.Details;
+            this.comparisonListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.comparisonListView_ItemSelectionChanged);
             this.comparisonListView.Click += new System.EventHandler(this.comparisonListView_Click);
             // 
             // nameColumnHeader
