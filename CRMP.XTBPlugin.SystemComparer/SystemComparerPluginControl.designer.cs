@@ -50,13 +50,25 @@
             this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
             this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
             this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.splitContainerOverview = new System.Windows.Forms.SplitContainer();
+            this.splitContainerCompare = new System.Windows.Forms.SplitContainer();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).BeginInit();
+            this.splitContainerOverview.Panel1.SuspendLayout();
+            this.splitContainerOverview.Panel2.SuspendLayout();
+            this.splitContainerOverview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).BeginInit();
+            this.splitContainerCompare.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
             // 
+            this.toolStripMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.toolStripMenu.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
@@ -64,7 +76,7 @@
             this.tbbLoadMetadata});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(907, 25);
+            this.toolStripMenu.Size = new System.Drawing.Size(194, 25);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -176,9 +188,9 @@
             this.comparisonListView.GridLines = true;
             this.comparisonListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.comparisonListView.HideSelection = false;
-            this.comparisonListView.Location = new System.Drawing.Point(3, 134);
+            this.comparisonListView.Location = new System.Drawing.Point(3, 3);
             this.comparisonListView.Name = "comparisonListView";
-            this.comparisonListView.Size = new System.Drawing.Size(901, 288);
+            this.comparisonListView.Size = new System.Drawing.Size(895, 271);
             this.comparisonListView.SmallImageList = this.DifferenceList;
             this.comparisonListView.StateImageList = this.TreeImagesList;
             this.comparisonListView.TabIndex = 0;
@@ -235,21 +247,56 @@
             // 
             this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
+            // splitContainerOverview
+            // 
+            this.splitContainerOverview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainerOverview.Location = new System.Drawing.Point(3, 134);
+            this.splitContainerOverview.Name = "splitContainerOverview";
+            this.splitContainerOverview.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainerOverview.Panel1
+            // 
+            this.splitContainerOverview.Panel1.Controls.Add(this.comparisonListView);
+            // 
+            // splitContainerOverview.Panel2
+            // 
+            this.splitContainerOverview.Panel2.Controls.Add(this.splitContainerCompare);
+            this.splitContainerOverview.Size = new System.Drawing.Size(901, 463);
+            this.splitContainerOverview.SplitterDistance = 277;
+            this.splitContainerOverview.TabIndex = 6;
+            // 
+            // splitContainerCompare
+            // 
+            this.splitContainerCompare.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerCompare.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerCompare.Name = "splitContainerCompare";
+            this.splitContainerCompare.Size = new System.Drawing.Size(901, 182);
+            this.splitContainerCompare.SplitterDistance = 454;
+            this.splitContainerCompare.TabIndex = 0;
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.comparisonListView);
+            this.Controls.Add(this.splitContainerOverview);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "SystemComparerPluginControl";
-            this.Size = new System.Drawing.Size(907, 425);
+            this.Size = new System.Drawing.Size(907, 600);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
+            this.splitContainerOverview.Panel1.ResumeLayout(false);
+            this.splitContainerOverview.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).EndInit();
+            this.splitContainerOverview.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).EndInit();
+            this.splitContainerCompare.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -276,5 +323,7 @@
         private System.Windows.Forms.ColumnHeader changedColumnHeader;
         private System.Windows.Forms.ColumnHeader notInSourceColumnHeader;
         private System.Windows.Forms.ColumnHeader notInTargetColumnHeader;
+        private System.Windows.Forms.SplitContainer splitContainerOverview;
+        private System.Windows.Forms.SplitContainer splitContainerCompare;
     }
 }
