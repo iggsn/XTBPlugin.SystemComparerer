@@ -119,17 +119,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModel\Attributes.cs" />
-    <Compile Include="DataModel\Entities.cs" />
-    <Compile Include="DataModel\AttributesComparer.cs" />
-    <Compile Include="DataModel\EntitiesComparer.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
     <Compile Include="Logic\ConnectionType.cs" />
     <Compile Include="Logic\LockRedraw.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
-    <Compile Include="Metadata\CustomizationAttribute.cs" />
-    <Compile Include="Metadata\CustomizationEntity.cs" />
     <Compile Include="Metadata\CustomizationForms.cs" />
     <Compile Include="Metadata\CustomizationRoot.cs" />
     <Compile Include="SystemComparerPlugin.cs" />

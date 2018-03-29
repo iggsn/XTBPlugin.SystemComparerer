@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
@@ -138,22 +137,6 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     break;
                 }
             }
-        }
-
-        internal DataSet CreateDataSet()
-        {
-            DataSet dataSet = new DataSet();
-
-            //dataSet.Tables.Add(_entitiesModel.GetDataTable());
-            //dataSet.Tables.Add(_entitiesModel._attributes.GetDataTable());
-
-            /*DataRelation relation = new DataRelation("EntityAttributes",
-                  dataSet.Tables["entities"].Columns["LogicalName"],
-                  dataSet.Tables["attributes"].Columns["EntityLogicalName"]);
-
-            dataSet.Relations.Add(relation);*/
-
-            return dataSet;
         }
     }
 }

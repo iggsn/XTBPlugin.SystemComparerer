@@ -4,9 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Logic;
-using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
-using Microsoft.Crm.Sdk.Messages;
 using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk;
 using XrmToolBox.Extensibility.Interfaces;
@@ -188,12 +186,6 @@ namespace CRMP.XTBPlugin.SystemComparer
                     comparisonListView.Items.Clear();
 
                     AddItem(comparison, null);
-
-                    /*var result = args.Result as EntityCollection;
-                    if (result != null)
-                    {
-                        MessageBox.Show($"Found {result.Entities.Count} accounts");
-                    }*/
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
