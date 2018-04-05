@@ -43,6 +43,7 @@
             this.labelSource = new System.Windows.Forms.Label();
             this.comparisonListView = new System.Windows.Forms.ListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.typeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.unchangedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.changedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.notInSourceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -180,6 +181,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comparisonListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.nameColumnHeader,
+            this.typeColumnHeader,
             this.unchangedColumnHeader,
             this.changedColumnHeader,
             this.notInSourceColumnHeader,
@@ -203,6 +205,11 @@
             // 
             this.nameColumnHeader.Text = "Name";
             this.nameColumnHeader.Width = 300;
+            // 
+            // typeColumnHeader
+            // 
+            this.typeColumnHeader.Text = "Type";
+            this.typeColumnHeader.Width = 150;
             // 
             // unchangedColumnHeader
             // 
@@ -326,5 +333,6 @@
         private System.Windows.Forms.ColumnHeader notInTargetColumnHeader;
         private System.Windows.Forms.SplitContainer splitContainerOverview;
         private System.Windows.Forms.SplitContainer splitContainerCompare;
+        private System.Windows.Forms.ColumnHeader typeColumnHeader;
     }
 }

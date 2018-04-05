@@ -12,7 +12,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
     {
         public MetadataComparison Compare(List<EntityMetadata> source, List<EntityMetadata> target)
         {
-            MetadataComparison entities = new MetadataComparison("Entities", source, target);
+            MetadataComparison entities = new MetadataComparison("Entities", source, target, null);
             BuildComparisons(entities, null, source, target);
 
             return entities;
@@ -69,11 +69,11 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                                 break;
                                 }
                             default:
-                                name = $"{prop.Name} ({type.Name})";
+                                name = prop.Name;
                                 break;
                         }
 
-                        parent = new MetadataComparison(name, source, target)
+                        parent = new MetadataComparison(name, source, target, type)
                         {
                             ParentProperty = prop
                         };

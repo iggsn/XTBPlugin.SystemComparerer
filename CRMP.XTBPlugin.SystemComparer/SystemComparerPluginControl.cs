@@ -204,6 +204,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                 IndentCount = parentItem?.IndentCount + 1 ?? 0
             };
 
+            item.SubItems.Add(customizationRoot.ValueTypeName);
+
             object obj = customizationRoot.SourceValue ?? customizationRoot.TargetValue;
             if (obj != null && customizationRoot.Children.Count > 0)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -7,6 +8,10 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
     public class MetadataComparison
     {
         public string Name { get; set; }
+
+        public Type ValueType { get; set; }
+
+        public string ValueTypeName => ValueType == null ? string.Empty : ValueType.Name;
 
         public object SourceValue { get; set; }
 
@@ -18,12 +23,13 @@ namespace CRMP.XTBPlugin.SystemComparer.DataModel
 
         public List<MetadataComparison> Children { get; private set; }
 
-        public MetadataComparison(string name, object source, object target)
+        public MetadataComparison(string name, object source, object target, Type type)
             : this()
         {
             Name = name;
             SourceValue = source;
             TargetValue = target;
+            ValueType = type;
         }
 
         public MetadataComparison()
