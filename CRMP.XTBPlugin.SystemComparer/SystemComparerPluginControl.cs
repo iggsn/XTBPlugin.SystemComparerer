@@ -12,7 +12,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl
+    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin
     {
         const int StateImageIndexDashPlus = 0;
         const int StateImageIndexDashMinus = 1;
@@ -179,7 +179,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     var emds = (Logic.SystemComparer)args.Result;
 
                     MetadataComparer comparer = new MetadataComparer();
-
+                    
                     MetadataComparison comparison = null;
                     comparison = comparer.Compare(emds._sourceCustomizationRoot.EntitiesRaw,
                         emds._targetCustomizationRoot.EntitiesRaw);
@@ -292,5 +292,10 @@ namespace CRMP.XTBPlugin.SystemComparer
 
             }
         }
+
+        #region IGithubInterface
+        public string RepositoryName => "XTBPlugin.SystemComparerer";
+        public string UserName => "iggsn";
+        #endregion
     }
 }
