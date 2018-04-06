@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk;
+using Newtonsoft.Json;
 using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
     public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl
     {
+        const int StateImageIndexDashPlus = 0;
+        const int StateImageIndexDashMinus = 1;
+
+        const int DifferenceImageIndexUnchanged = 0;
+        const int DifferenceImageIndexChanged = 1;
+        const int DifferenceImageIndexNotInSource = 2;
+        const int DifferenceImageIndexNotInTarget = 3;
 
         private ConnectionDetail _sourceConnection;
         private ConnectionDetail _targetConnection;
@@ -154,10 +164,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
-                    worker.ReportProgress(0, "Fetching Metadata from Source");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source);
-                    worker.ReportProgress(50, "Fetching Metadata from Target");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target);
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
@@ -168,15 +176,121 @@ namespace CRMP.XTBPlugin.SystemComparer
                         MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    dataGrid1.DataSource = _systemComparer.CreateDataSet().Tables[0];
-                    /*var result = args.Result as EntityCollection;
-                    if (result != null)
-                    {
-                        MessageBox.Show($"Found {result.Entities.Count} accounts");
-                    }*/
+                    var emds = (Logic.SystemComparer)args.Result;
+
+                    MetadataComparer comparer = new MetadataComparer();
+
+                    MetadataComparison comparison = null;
+                    comparison = comparer.Compare(emds._sourceCustomizationRoot.EntitiesRaw,
+                        emds._targetCustomizationRoot.EntitiesRaw);
+
+                    comparisonListView.Items.Clear();
+
+                    AddItem(comparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
+        }
+
+        private void AddItem(MetadataComparison customizationRoot, ListViewItem parentItem)
+        {
+            ListViewItem item = new ListViewItem
+            {
+                Text = customizationRoot.Name,
+                Checked = false,
+                StateImageIndex = customizationRoot.Children.Count > 0 ? StateImageIndexDashPlus : -1,
+                Tag = customizationRoot,
+                ImageIndex = GetImageIndex(customizationRoot),
+                IndentCount = parentItem?.IndentCount + 1 ?? 0
+            };
+
+            item.SubItems.Add(customizationRoot.ValueTypeName);
+
+            object obj = customizationRoot.SourceValue ?? customizationRoot.TargetValue;
+            if (obj != null && customizationRoot.Children.Count > 0)
+            {
+                item.SubItems.Add(customizationRoot.GetUnchangedCount().ToString());
+                item.SubItems.Add(customizationRoot.GetChangedCount().ToString());
+                item.SubItems.Add(customizationRoot.GetMissingInSourceCount().ToString());
+                item.SubItems.Add(customizationRoot.GetMissingInTargetCount().ToString());
+            }
+
+            comparisonListView.Items.Insert(parentItem?.Index + 1 ?? 0, item);
+        }
+
+        private int GetImageIndex(MetadataComparison metadataComparison)
+        {
+            if (metadataComparison.IsDifferent)
+            {
+                if (metadataComparison.SourceValue == null)
+                {
+                    return DifferenceImageIndexNotInSource;
+                }
+
+                if (metadataComparison.TargetValue == null)
+                {
+                    return DifferenceImageIndexNotInTarget;
+                }
+
+                return DifferenceImageIndexChanged;
+            }
+
+            return DifferenceImageIndexUnchanged;
+        }
+
+        private void comparisonListView_Click(object sender, EventArgs e)
+        {
+            ListViewHitTestInfo hitTest = comparisonListView.HitTest(comparisonListView.PointToClient(MousePosition));
+            if (hitTest.Location == ListViewHitTestLocations.StateImage)
+            {
+                ToggleItem(hitTest.Item);
+            }
+        }
+
+        private void ToggleItem(ListViewItem item)
+        {
+            if (item.Checked) // expanded
+            {
+                using (new LockRedraw(comparisonListView.Handle))
+                {
+                    while (comparisonListView.Items.Count > item.Index + 1 &&
+                           comparisonListView.Items[item.Index + 1].IndentCount > item.IndentCount)
+                    {
+                        comparisonListView.Items.RemoveAt(item.Index + 1);
+                    }
+
+                    item.Checked = false;
+                    item.StateImageIndex = StateImageIndexDashPlus;
+                }
+            }
+            else
+            {
+                MetadataComparison comparison = (MetadataComparison)item.Tag;
+                if (comparison.Children.Count > 0)
+                {
+                    using (new LockRedraw(comparisonListView.Handle))
+                    {
+                        foreach (MetadataComparison childComparison in comparison.Children.AsEnumerable().Reverse())
+                        {
+                            AddItem(childComparison, item);
+                        }
+                        item.StateImageIndex = StateImageIndexDashMinus;
+                        item.Checked = true;
+                    }
+                }
+            }
+        }
+
+        private void comparisonListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (e.IsSelected)
+            {
+                MetadataComparison comparison = (MetadataComparison)e.Item.Tag;
+
+                var sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented, new JsonSerializerSettings() { MaxDepth = 1 });
+
+
+            }
         }
     }
 }
