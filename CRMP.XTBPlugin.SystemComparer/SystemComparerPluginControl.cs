@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.UI;
 using System.Windows.Forms;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Logic;
@@ -54,7 +59,48 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 LogInfo("Settings found and loaded");
             }
+
+            InitBrowser(webBrowserSource);
+            InitBrowser(webBrowserTarget);
         }
+
+        private void InitBrowser(WebBrowser webBrowser)
+        {
+            webBrowser.DocumentText = "";
+            HtmlDocument doc = webBrowser.Document;
+            doc.OpenNew(true);
+            doc.Write("<html>");
+            doc.Write("<head>");
+            doc.Write("<style type='text/css'>");
+            doc.Write("* {padding: 0px; margin: 0px;}");
+            doc.Write("body {overflow: auto; font: 10pt Courier New; border: 1px solid ActiveBorder;}");
+            doc.Write("p {white-space: nowrap;}");
+            doc.Write(".missing, .changed, .blank {background-color: #DEDFFF;}");
+            doc.Write(".missing span {background-color: #CE6563;}");
+            doc.Write(".changed span {background-color: yellow;}");
+            doc.Write("</style>");
+            doc.Write("</head>");
+            doc.Write("<body>");
+            doc.Write("</body>");
+            doc.Write("</html>");
+            //doc.Window.Scroll += new HtmlElementEventHandler(Window_Scroll);
+        }
+
+        /* void Window_Scroll(object sender, HtmlElementEventArgs e)
+         {
+             HtmlWindow window = (HtmlWindow)sender;
+
+             if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
+             {
+                 TargetWebBrowser.Document.Body.ScrollTop = SourceWebBrowser.Document.Body.ScrollTop;
+                 TargetWebBrowser.Document.Body.ScrollLeft = SourceWebBrowser.Document.Body.ScrollLeft;
+             }
+             else
+             {
+                 SourceWebBrowser.Document.Body.ScrollTop = TargetWebBrowser.Document.Body.ScrollTop;
+                 SourceWebBrowser.Document.Body.ScrollLeft = TargetWebBrowser.Document.Body.ScrollLeft;
+             }
+         }*/
 
         private void tsbClose_Click(object sender, EventArgs e)
         {
@@ -179,7 +225,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     var emds = (Logic.SystemComparer)args.Result;
 
                     MetadataComparer comparer = new MetadataComparer();
-                    
+
                     MetadataComparison comparison = null;
                     comparison = comparer.Compare(emds._sourceCustomizationRoot.EntitiesRaw,
                         emds._targetCustomizationRoot.EntitiesRaw);
@@ -287,9 +333,42 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 MetadataComparison comparison = (MetadataComparison)e.Item.Tag;
 
-                var sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented, new JsonSerializerSettings() { MaxDepth = 1 });
+                webBrowserSource.Document.Body.InnerHtml = "";
+                webBrowserTarget.Document.Body.InnerHtml = "";
 
+                string sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 1 });
+                string targetString = JsonConvert.SerializeObject(comparison.TargetValue, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 1 });
 
+                /*List<string> sourceLines = new List<string>();
+
+                JsonTextReader reader = new JsonTextReader(new StringReader(sourceString));
+                while (reader.Read())
+                {
+                    if (reader.Value != null)
+                    {
+                        sourceLines.Add($"Token: {reader.TokenType}, Value: {reader.Value}");
+                    }
+                    else
+                    {
+                        sourceLines.Add($"Token: {reader.TokenType}");
+                    }
+                }
+
+                StringBuilder sourceBuilder = new StringBuilder();
+                HtmlTextWriter sourceWriter = new HtmlTextWriter(new StringWriter(sourceBuilder));
+
+                for (int i = 0; i < sourceLines.Count; i++)
+                {
+                    sourceWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                    sourceWriter.RenderBeginTag(HtmlTextWriterTag.Span);
+                    sourceLines[i] = HttpUtility.HtmlEncode(sourceLines[i]);
+                    sourceWriter.Write(sourceLines[i].Replace(" ", "&nbsp;").Replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"));
+                    sourceWriter.RenderEndTag();
+                    sourceWriter.RenderEndTag();
+                }*/
+
+                webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
+                webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
         }
 
