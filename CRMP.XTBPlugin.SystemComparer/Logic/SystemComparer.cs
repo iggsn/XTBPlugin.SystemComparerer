@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
@@ -77,6 +78,31 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
 
             crmServiceClient.RetrieveMultiple(query);*/
+        }
+
+        public void RetrieveOrganization(ConnectionType connectionType, Action<int, string> reportProgress)
+        {
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
+            CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
+
+            QueryExpression query = new QueryExpression
+            {
+                EntityName = "organization",
+                ColumnSet = new ColumnSet(true),
+                PageInfo = new PagingInfo
+                {
+                    Count = 5000,
+                    PageNumber = 1,
+                    PagingCookie = null
+                }
+            };
+
+            reportProgress(0, $"Retrieving and processing Organization data from {connectionType.ToString()}");
+            ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
+
+            EntityCollection response = crmServiceClient.RetrieveMultiple(query);
+
+            customzationRoot.Organizations = response.Entities.ToList();
         }
 
         private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)

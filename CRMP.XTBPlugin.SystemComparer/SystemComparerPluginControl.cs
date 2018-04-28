@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.UI;
 using System.Windows.Forms;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Logic;
@@ -30,9 +25,9 @@ namespace CRMP.XTBPlugin.SystemComparer
         private ConnectionDetail _sourceConnection;
         private ConnectionDetail _targetConnection;
 
-        private Settings mySettings;
+        private Settings _mySettings;
 
-        public event EventHandler OnRequestConnection;
+        public new event EventHandler OnRequestConnection;
 
         private Logic.SystemComparer _systemComparer;
 
@@ -43,15 +38,20 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         }
 
+        #region IGithubInterface
+        public string RepositoryName => "XTBPlugin.SystemComparerer";
+        public string UserName => "iggsn";
+        #endregion
+
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
             /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
                 new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
             // Loads or creates the settings for the plugin
-            if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
+            if (!SettingsManager.Instance.TryLoad(GetType(), out _mySettings))
             {
-                mySettings = new Settings();
+                _mySettings = new Settings();
 
                 LogWarning("Settings not found => a new settings file has been created!");
             }
@@ -115,7 +115,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
         {
             // Before leaving, save the settings
-            SettingsManager.Instance.Save(GetType(), mySettings);
+            SettingsManager.Instance.Save(GetType(), _mySettings);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         /// <param name="e"></param>
         private void MyPluginControl_ConnectionUpdated(object sender, ConnectionUpdatedEventArgs e)
         {
-            mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
+            _mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
             LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
         }
 
@@ -171,7 +171,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
 
-        public void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
+        public override void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
             string actionName = "", object parameter = null)
         {
             if (actionName == "TargetOrganization")
@@ -211,7 +211,9 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
@@ -227,12 +229,18 @@ namespace CRMP.XTBPlugin.SystemComparer
                     MetadataComparer comparer = new MetadataComparer();
 
                     MetadataComparison comparison = null;
-                    comparison = comparer.Compare(emds._sourceCustomizationRoot.EntitiesRaw,
+                    comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
                         emds._targetCustomizationRoot.EntitiesRaw);
+
+                    /*OrganizationComparer orgComparer = new OrganizationComparer();
+                    MetadataComparison orgComparison = null;
+                    orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
+                        emds._targetCustomizationRoot.Organizations);*/
 
                     comparisonListView.Items.Clear();
 
                     AddItem(comparison, null);
+                    //AddItem(orgComparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
@@ -331,13 +339,15 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             if (e.IsSelected)
             {
-                MetadataComparison comparison = (MetadataComparison)e.Item.Tag;
+                MetadataComparison comparison = (MetadataComparison) e.Item.Tag;
 
                 webBrowserSource.Document.Body.InnerHtml = "";
                 webBrowserTarget.Document.Body.InnerHtml = "";
 
-                string sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 1 });
-                string targetString = JsonConvert.SerializeObject(comparison.TargetValue, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 1 });
+                string sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented,
+                    new JsonSerializerSettings {MaxDepth = 1});
+                string targetString = JsonConvert.SerializeObject(comparison.TargetValue, Formatting.Indented,
+                    new JsonSerializerSettings {MaxDepth = 1});
 
                 /*List<string> sourceLines = new List<string>();
 
@@ -371,10 +381,5 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
         }
-
-        #region IGithubInterface
-        public string RepositoryName => "XTBPlugin.SystemComparerer";
-        public string UserName => "iggsn";
-        #endregion
     }
 }
