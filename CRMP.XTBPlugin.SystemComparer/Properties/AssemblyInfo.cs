@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CRMP.XTBPlugin.SystemComparer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("This is an XRMToolBox Plugin to compare two CRM Organizations for differences")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lars Müller, CRM Partners AG")]
 [assembly: AssemblyProduct("CRMP.XTBPlugin.SystemComparer")]
-[assembly: AssemblyCopyright("Copyright © CRMPartners 2018")]
+[assembly: AssemblyCopyright("Copyright © CRM Partners AG 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
