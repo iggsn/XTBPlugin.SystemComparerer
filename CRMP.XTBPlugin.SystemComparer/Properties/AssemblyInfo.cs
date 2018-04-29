@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -8,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("CRMP.XTBPlugin.SystemComparer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("CRM Partners AG")]
+[assembly: AssemblyCompany("Lars Müller, CRM Partners AG")]
 [assembly: AssemblyProduct("CRMP.XTBPlugin.SystemComparer")]
 [assembly: AssemblyCopyright("Copyright © CRMPartners 2018")]
 [assembly: AssemblyTrademark("")]

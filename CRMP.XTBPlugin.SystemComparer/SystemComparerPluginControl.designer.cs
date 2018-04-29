@@ -53,6 +53,8 @@
             this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.splitContainerOverview = new System.Windows.Forms.SplitContainer();
             this.splitContainerCompare = new System.Windows.Forms.SplitContainer();
+            this.webBrowserSource = new System.Windows.Forms.WebBrowser();
+            this.webBrowserTarget = new System.Windows.Forms.WebBrowser();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
@@ -61,6 +63,8 @@
             this.splitContainerOverview.Panel2.SuspendLayout();
             this.splitContainerOverview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).BeginInit();
+            this.splitContainerCompare.Panel1.SuspendLayout();
+            this.splitContainerCompare.Panel2.SuspendLayout();
             this.splitContainerCompare.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -280,9 +284,35 @@
             this.splitContainerCompare.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerCompare.Location = new System.Drawing.Point(0, 0);
             this.splitContainerCompare.Name = "splitContainerCompare";
+            // 
+            // splitContainerCompare.Panel1
+            // 
+            this.splitContainerCompare.Panel1.Controls.Add(this.webBrowserSource);
+            // 
+            // splitContainerCompare.Panel2
+            // 
+            this.splitContainerCompare.Panel2.Controls.Add(this.webBrowserTarget);
             this.splitContainerCompare.Size = new System.Drawing.Size(901, 182);
             this.splitContainerCompare.SplitterDistance = 454;
             this.splitContainerCompare.TabIndex = 0;
+            // 
+            // webBrowserSource
+            // 
+            this.webBrowserSource.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowserSource.Location = new System.Drawing.Point(0, 0);
+            this.webBrowserSource.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserSource.Name = "webBrowserSource";
+            this.webBrowserSource.Size = new System.Drawing.Size(454, 182);
+            this.webBrowserSource.TabIndex = 0;
+            // 
+            // webBrowserTarget
+            // 
+            this.webBrowserTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowserTarget.Location = new System.Drawing.Point(0, 0);
+            this.webBrowserTarget.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserTarget.Name = "webBrowserTarget";
+            this.webBrowserTarget.Size = new System.Drawing.Size(443, 182);
+            this.webBrowserTarget.TabIndex = 0;
             // 
             // SystemComparerPluginControl
             // 
@@ -303,6 +333,8 @@
             this.splitContainerOverview.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).EndInit();
             this.splitContainerOverview.ResumeLayout(false);
+            this.splitContainerCompare.Panel1.ResumeLayout(false);
+            this.splitContainerCompare.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).EndInit();
             this.splitContainerCompare.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -334,5 +366,7 @@
         private System.Windows.Forms.SplitContainer splitContainerOverview;
         private System.Windows.Forms.SplitContainer splitContainerCompare;
         private System.Windows.Forms.ColumnHeader typeColumnHeader;
+        private System.Windows.Forms.WebBrowser webBrowserSource;
+        private System.Windows.Forms.WebBrowser webBrowserTarget;
     }
 }

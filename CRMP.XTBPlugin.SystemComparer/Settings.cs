@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CRMP.XTBPlugin.SystemComparer
+﻿namespace CRMP.XTBPlugin.SystemComparer
 {
     /// <summary>
     /// This class can help you to store settings for your plugin
