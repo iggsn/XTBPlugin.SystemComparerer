@@ -339,15 +339,15 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             if (e.IsSelected)
             {
-                MetadataComparison comparison = (MetadataComparison) e.Item.Tag;
+                MetadataComparison comparison = (MetadataComparison)e.Item.Tag;
 
                 webBrowserSource.Document.Body.InnerHtml = "";
                 webBrowserTarget.Document.Body.InnerHtml = "";
 
                 string sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented,
-                    new JsonSerializerSettings {MaxDepth = 1});
+                    new JsonSerializerSettings { MaxDepth = 1 });
                 string targetString = JsonConvert.SerializeObject(comparison.TargetValue, Formatting.Indented,
-                    new JsonSerializerSettings {MaxDepth = 1});
+                    new JsonSerializerSettings { MaxDepth = 1 });
 
                 /*List<string> sourceLines = new List<string>();
 
