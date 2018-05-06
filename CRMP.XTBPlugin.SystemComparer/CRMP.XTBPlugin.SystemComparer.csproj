@@ -141,6 +141,6 @@
 	<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="nuget pack .\CRMP.XTBPlugin.SystemComparer.nuspec -Properties version=$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3))" />
+    <Exec Command="nuget pack .\CRMP.XTBPlugin.SystemComparer.nuspec -Properties version=$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4))" />
   </Target>
 </Project>
