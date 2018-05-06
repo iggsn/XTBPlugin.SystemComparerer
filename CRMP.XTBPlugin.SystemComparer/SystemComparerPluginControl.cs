@@ -211,9 +211,9 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
-                    _systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
-                    _systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
