@@ -241,6 +241,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     var emds = (Logic.SystemComparer)args.Result;
 
                     MetadataComparer comparer = new MetadataComparer();
+                    comparer.LogHandler += LogHandler;
 
                     MetadataComparison comparison = null;
                     comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
@@ -394,6 +395,11 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
+        }
+
+        private void LogHandler(object sender, EventArgs e)
+        {
+            LogInfo("From Delegate");
         }
     }
 }

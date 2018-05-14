@@ -10,6 +10,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer
     {
+        public EventHandler<EventArgs> LogHandler;
+
         public MetadataComparer()
         {  }
 
@@ -21,8 +23,14 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             return entities;
         }
 
+        private void OnLogMessageRaised(EventArgs e)
+        {
+            LogHandler?.Invoke(this, e);
+        }
+
         private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
         {
+            //OnLogMessageRaised(new EventArgs());
             // Make sure at least one value is not null
             if (source != null || target != null)
             {
