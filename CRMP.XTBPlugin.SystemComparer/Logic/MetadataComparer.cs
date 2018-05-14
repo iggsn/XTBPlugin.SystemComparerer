@@ -10,6 +10,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer
     {
+        public MetadataComparer()
+        {  }
+
         public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
