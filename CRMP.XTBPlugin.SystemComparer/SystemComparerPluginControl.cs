@@ -241,7 +241,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     var emds = (Logic.SystemComparer)args.Result;
 
                     MetadataComparer comparer = new MetadataComparer();
-                    comparer.LogHandler += LogHandler;
+                    //comparer.LogHandler += LogHandler;
 
                     MetadataComparison comparison = null;
                     comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
