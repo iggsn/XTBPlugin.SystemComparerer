@@ -43,6 +43,12 @@ namespace CRMP.XTBPlugin.SystemComparer
         public string UserName => "iggsn";
         #endregion
 
+        /// <summary>
+        /// Entrypoint of the Plugin. Will execute on load of the plugin
+        /// Initializes the settings and the two webbrowser windows
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
             /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
@@ -104,6 +110,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void tsbClose_Click(object sender, EventArgs e)
         {
+            LogInfo("Closing the Plugin on demand.");
             CloseTool();
         }
 
@@ -131,6 +138,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void buttonSourceChange_Click(object sender, EventArgs e)
         {
+            LogInfo("Clicked on Source Change button.");
             if (OnRequestConnection != null)
             {
                 var arg = new RequestConnectionEventArgs
@@ -144,6 +152,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void buttonChangeTarget_Click(object sender, EventArgs e)
         {
+            LogInfo("Clicked on Target Change button.");
             if (OnRequestConnection != null)
             {
                 var arg = new RequestConnectionEventArgs
@@ -197,6 +206,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void tbbLoadMetadata_Click(object sender, EventArgs e)
         {
+            LogInfo("Clicked on Load Entities button.");
             LoadEntites();
             //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
         }
@@ -210,8 +220,10 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
+                    LogInfo("Start retieving metadata on Source");
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    LogInfo("Start retieving metadata on Target");
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
 
@@ -219,14 +231,17 @@ namespace CRMP.XTBPlugin.SystemComparer
                 },
                 PostWorkCallBack = (args) =>
                 {
+                    LogInfo("Postprocessing Metadata");
                     if (args.Error != null)
                     {
+                        LogError(args.Error.ToString(), args);
                         MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
                     var emds = (Logic.SystemComparer)args.Result;
 
                     MetadataComparer comparer = new MetadataComparer();
+                    comparer.LogHandler += LogHandler;
 
                     MetadataComparison comparison = null;
                     comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
@@ -380,6 +395,11 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
+        }
+
+        private void LogHandler(object sender, EventArgs e)
+        {
+            LogInfo("From Delegate");
         }
     }
 }
