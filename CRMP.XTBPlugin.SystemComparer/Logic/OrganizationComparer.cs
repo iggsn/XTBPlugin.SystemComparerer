@@ -4,18 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 
+// https://stackoverflow.com/questions/20554103/recursively-get-properties-child-properties-of-a-class
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class MetadataComparer
+    public class OrganizationComparer
     {
-        public EventHandler<EventArgs> LogHandler;
-
-        public MetadataComparer()
-        {  }
-
-        public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
+        public MetadataComparison Compare(string name, List<Entity> source, List<Entity> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
@@ -23,14 +20,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             return entities;
         }
 
-        private void OnLogMessageRaised(EventArgs e)
-        {
-            LogHandler?.Invoke(this, e);
-        }
-
         private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
         {
-            //OnLogMessageRaised(new EventArgs());
             // Make sure at least one value is not null
             if (source != null || target != null)
             {
@@ -47,15 +38,15 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<EntityMetadata>)) //&& ComparisonTypeMap.IsTypeComparisonType(type))
+                    if (type != typeof(List<Entity>)) //&& ComparisonTypeMap.IsTypeComparisonType(type))
                     {
                         string name;
 
                         switch (type.Name)
                         {
-                            case "EntityMetadata":
+                            case "Entity":
                             {
-                                name = ((EntityMetadata)(source ?? target)).LogicalName;
+                                name = ((Entity)(source ?? target)).LogicalName;
                                 break;
                             }
                             case "AttributeMetadata":

@@ -67,6 +67,7 @@
     <Compile Include="DataModel\MetadataComparison.cs" />
     <Compile Include="Logic\ConnectionType.cs" />
     <Compile Include="Logic\LockRedraw.cs" />
+    <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
     <Compile Include="Metadata\CustomizationForms.cs" />
@@ -138,9 +139,9 @@
 )</PostBuildEvent>
   </PropertyGroup>
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
-	<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="nuget pack .\CRMP.XTBPlugin.SystemComparer.nuspec -Properties version=$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3))" />
+    <Exec Command="nuget pack .\CRMP.XTBPlugin.SystemComparer.nuspec -Properties version=$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(4))" />
   </Target>
 </Project>

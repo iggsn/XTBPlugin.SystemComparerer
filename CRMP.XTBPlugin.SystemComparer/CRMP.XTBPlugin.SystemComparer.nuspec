@@ -3,14 +3,14 @@
   <metadata>
     <id>CRMP.XTBPlugin.SystemComparer</id>
     <version>$version$</version>
-    <title>CRMP.XTBPlugin.SystemComparer</title>
+    <title>System Customization Comparer</title>
     <authors>Lars Müller, CRM Partners AG</authors>
     <owners>Lars Müller, CRM Partners AG</owners>
     <licenseUrl>https://github.com/iggsn/XTBPlugin.SystemComparerer/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/iggsn/XTBPlugin.SystemComparerer</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/iggsn/XTBPlugin.SystemComparerer/master/Logos/nuget_logo_64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>This is an XRMToolBox Plugin to compare two CRM Organizations for differences</description>
+    <description>This is an XrmToolBox Plugin to compare two CRM Organizations for differences.</description>
     <releaseNotes>
       These are the included main changes
 
