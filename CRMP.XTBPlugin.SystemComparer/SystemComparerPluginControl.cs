@@ -114,28 +114,6 @@ namespace CRMP.XTBPlugin.SystemComparer
             CloseTool();
         }
 
-        /// <summary>
-        /// This event occurs when the plugin is closed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
-        {
-            // Before leaving, save the settings
-            SettingsManager.Instance.Save(GetType(), _mySettings);
-        }
-
-        /// <summary>
-        /// This event occurs when the connection has been updated in XrmToolBox
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MyPluginControl_ConnectionUpdated(object sender, ConnectionUpdatedEventArgs e)
-        {
-            _mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
-            LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
-        }
-
         private void buttonSourceChange_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Source Change button.");
@@ -180,6 +158,14 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
 
+        public override void ClosingPlugin(PluginCloseInfo info)
+        {
+            LogInfo("Saving Settings");
+            SettingsManager.Instance.Save(GetType(), _mySettings);
+
+            base.ClosingPlugin(info);
+        }
+
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
             string actionName = "", object parameter = null)
         {
@@ -202,6 +188,14 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 tbbLoadMetadata.Enabled = false;
             }
+        }
+
+        protected override void OnConnectionUpdated(ConnectionUpdatedEventArgs e)
+        {
+            _mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
+            LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
+
+            base.OnConnectionUpdated(e);
         }
 
         private void tbbLoadMetadata_Click(object sender, EventArgs e)
