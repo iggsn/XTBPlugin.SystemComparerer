@@ -23,6 +23,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\CRMP.XTBPlugin.*.dll" target="lib\net462\Plugins" />
+    <file src="bin\Release\Merged\CRMP.XTBPlugin.*.dll" target="lib\net462\Plugins" />
   </files>
 </package>

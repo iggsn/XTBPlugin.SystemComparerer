@@ -15,7 +15,7 @@ namespace CRMP.XTBPlugin.SystemComparer.AppCode
 
             _tmClient = new TelemetryClient
             {
-                InstrumentationKey = "TODO_REPLACE_KEY"
+                InstrumentationKey = "TO_BE_REPLACED"
             };
 
             _tmClient.Context.Session.Id = Guid.NewGuid().ToString();
@@ -52,8 +52,6 @@ namespace CRMP.XTBPlugin.SystemComparer.AppCode
                     _tmClient.TrackEvent(action, AssembleProperties());
                     break;
             }
-
-            _tmClient.Flush();
         }
 
         public void Flush()
