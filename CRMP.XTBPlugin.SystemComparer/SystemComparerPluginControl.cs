@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
@@ -26,6 +27,8 @@ namespace CRMP.XTBPlugin.SystemComparer
         private ConnectionDetail _targetConnection;
 
         private Settings _mySettings;
+
+        private Telemetry _telemetry;
 
         public new event EventHandler OnRequestConnection;
 
@@ -54,6 +57,8 @@ namespace CRMP.XTBPlugin.SystemComparer
             /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
                 new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
+            _telemetry = new Telemetry(this);
+
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out _mySettings))
             {
@@ -63,6 +68,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
             else
             {
+                _telemetry.LogEvent("SettingsLoaded");
                 LogInfo("Settings found and loaded");
             }
 
@@ -111,6 +117,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void tsbClose_Click(object sender, EventArgs e)
         {
             LogInfo("Closing the Plugin on demand.");
+            _telemetry.LogEvent("PluginClosed");
             CloseTool();
         }
 
@@ -162,6 +169,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             LogInfo("Saving Settings");
             SettingsManager.Instance.Save(GetType(), _mySettings);
+            _telemetry.Dispose();
 
             base.ClosingPlugin(info);
         }

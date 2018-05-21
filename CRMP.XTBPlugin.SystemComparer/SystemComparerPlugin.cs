@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Reflection;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Interfaces;
 
@@ -21,6 +22,24 @@ namespace CRMP.XTBPlugin.SystemComparer
         public override IXrmToolBoxPluginControl GetControl()
         {
             return new SystemComparerPluginControl();
+        }
+
+        public static string CurrentVersion
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                return assembly.GetName().Version.ToString();
+            }
+        }
+
+        public static string Name
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                return assembly.GetName().Name;
+            }
         }
     }
 }
