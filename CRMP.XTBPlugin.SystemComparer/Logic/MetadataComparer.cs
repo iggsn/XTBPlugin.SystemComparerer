@@ -10,6 +10,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer
     {
+        private List<string> ignoreList = new List<string> { "MetadataId" };
+
         public EventHandler<EventArgs> LogHandler;
 
         public MetadataComparer()
@@ -91,7 +93,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type))
+                    if (IsSimpleType(type) && !ignoreList.Any(s => parent.Name.Contains(s)))
                     {
                         // for simple types just compare values
                          if (!Equals(source, target))

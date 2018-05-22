@@ -1,4 +1,4 @@
-﻿namespace CRMP.XTBPlugin.SystemComparer.Logic
+﻿namespace CRMP.XTBPlugin.SystemComparer.AppCode
 {
     public enum ConnectionType
     {

@@ -13,8 +13,10 @@
     <description>This is an XrmToolBox Plugin to compare two CRM Organizations for differences.</description>
     <releaseNotes>
       These are the included main changes
-
       1.2018.4.29: intial release to compare entity metadata.
+      1.2018.5.18: added icons and basic logging
+      1.2018.5.XX: aligned file version number and downgraded NewtonSoft.Json to fit XrmToolBox
+                   added optional telemetry
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>XrmToolBox Plugins SystemComparer</tags>

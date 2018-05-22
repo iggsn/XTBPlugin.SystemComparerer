@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;

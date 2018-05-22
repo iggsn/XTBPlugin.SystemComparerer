@@ -67,8 +67,8 @@
     <Compile Include="AppCode\Telemetry.cs" />
     <Compile Include="AppCode\TelemetryEventType.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
-    <Compile Include="Logic\ConnectionType.cs" />
-    <Compile Include="Logic\LockRedraw.cs" />
+    <Compile Include="AppCode\ConnectionType.cs" />
+    <Compile Include="AppCode\LockRedraw.cs" />
     <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
@@ -126,7 +126,7 @@
       <Version>1.2018.4.16</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
+      <Version>9.0.1</Version>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
       <Version>4.6.2</Version>
@@ -148,15 +148,15 @@
   </PropertyGroup>
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
     <ItemGroup>
-	  <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
-	  <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
-	</ItemGroup>
-	<PropertyGroup>  
-	  <OutputAssembly>$(OutputPath)Merged\CRMP.XTBPlugin.SystemComparer.dll</OutputAssembly>
-	</PropertyGroup>
-	<MakeDir Directories="$(OutputPath)Merged"/>
-	<Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
-	<Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+      <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+    </ItemGroup>
+    <PropertyGroup>
+      <OutputAssembly>$(OutputPath)Merged\CRMP.XTBPlugin.SystemComparer.dll</OutputAssembly>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutputPath)Merged" />
+    <Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
+    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
