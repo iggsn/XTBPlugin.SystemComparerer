@@ -59,6 +59,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                 new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
             _telemetry = new Telemetry(this);
+            _telemetry.LogEvent(EventName.PluginStart);
 
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out Settings))
@@ -66,11 +67,12 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Settings = new Settings();
 
                 LogWarning("Settings not found => a new settings file has been created!");
+                _telemetry.LogEvent(EventName.SettingsCreated);
             }
             else
             {
-                _telemetry.LogEvent("SettingsLoaded");
                 LogInfo("Settings found and loaded");
+                _telemetry.LogEvent(EventName.SettingsLoaded);
             }
 
             InitBrowser(webBrowserSource);
@@ -124,7 +126,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void tsbClose_Click(object sender, EventArgs e)
         {
             LogInfo("Closing the Plugin on demand.");
-            _telemetry.LogEvent("PluginClosed");
+            _telemetry.LogEvent(EventName.PluginClosed);
             CloseTool();
         }
 
@@ -429,6 +431,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         public void SaveSettings()
         {
             LogInfo("Saving Settings");
+            _telemetry.LogEvent(EventName.SettingsSaved);
             SettingsManager.Instance.Save(typeof(SystemComparerPluginControl), Settings);
         }
 

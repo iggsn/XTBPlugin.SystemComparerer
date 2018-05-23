@@ -64,6 +64,7 @@
     <Reference Include="System.Workflow.Runtime" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCode\EventName.cs" />
     <Compile Include="AppCode\Telemetry.cs" />
     <Compile Include="AppCode\TelemetryEventType.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
@@ -159,7 +160,7 @@
     <ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
       <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
-	  <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
     <PropertyGroup>
       <OutputAssembly>$(OutputPath)Merged\CRMP.XTBPlugin.SystemComparer.dll</OutputAssembly>
