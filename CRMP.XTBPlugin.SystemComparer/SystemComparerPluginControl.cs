@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
+using CRMP.XTBPlugin.SystemComparer.Forms;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
@@ -26,7 +27,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private ConnectionDetail _sourceConnection;
         private ConnectionDetail _targetConnection;
 
-        private Settings _mySettings;
+        internal Settings Settings;
 
         private Telemetry _telemetry;
 
@@ -60,9 +61,9 @@ namespace CRMP.XTBPlugin.SystemComparer
             _telemetry = new Telemetry(this);
 
             // Loads or creates the settings for the plugin
-            if (!SettingsManager.Instance.TryLoad(GetType(), out _mySettings))
+            if (!SettingsManager.Instance.TryLoad(GetType(), out Settings))
             {
-                _mySettings = new Settings();
+                Settings = new Settings();
 
                 LogWarning("Settings not found => a new settings file has been created!");
             }
@@ -114,12 +115,47 @@ namespace CRMP.XTBPlugin.SystemComparer
              }
          }*/
 
+        #region ToolbarClicks
+        /// <summary>
+        /// Closes the Plugin
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tsbClose_Click(object sender, EventArgs e)
         {
             LogInfo("Closing the Plugin on demand.");
             _telemetry.LogEvent("PluginClosed");
             CloseTool();
         }
+
+        /// <summary>
+        /// Loads the Metadata from both CRM Systems
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbbLoadMetadata_Click(object sender, EventArgs e)
+        {
+            LogInfo("Clicked on Load Entities button.");
+            LoadEntites();
+            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
+        }
+
+        /// <summary>
+        /// Shows the Options Dialog
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbbOptions_Click(object sender, EventArgs e)
+        {
+            bool allowLogUsage = Settings.AllowLogUsage.GetValueOrDefault(false);
+
+            Options optionDialog = new Options(this);
+            if (optionDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                LogInfo(Settings.AllowLogUsage is true ? "Statistics accepted." : "Statistics denied.");
+            }
+        }
+        #endregion
 
         private void buttonSourceChange_Click(object sender, EventArgs e)
         {
@@ -167,8 +203,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         public override void ClosingPlugin(PluginCloseInfo info)
         {
-            LogInfo("Saving Settings");
-            SettingsManager.Instance.Save(GetType(), _mySettings);
+            SaveSettings();
             _telemetry.Dispose();
 
             base.ClosingPlugin(info);
@@ -200,17 +235,9 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         protected override void OnConnectionUpdated(ConnectionUpdatedEventArgs e)
         {
-            _mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
             LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
 
             base.OnConnectionUpdated(e);
-        }
-
-        private void tbbLoadMetadata_Click(object sender, EventArgs e)
-        {
-            LogInfo("Clicked on Load Entities button.");
-            LoadEntites();
-            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
         }
 
         private void LoadEntites()
@@ -397,6 +424,12 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
+        }
+
+        public void SaveSettings()
+        {
+            LogInfo("Saving Settings");
+            SettingsManager.Instance.Save(typeof(SystemComparerPluginControl), Settings);
         }
 
         private void LogHandler(object sender, EventArgs e)

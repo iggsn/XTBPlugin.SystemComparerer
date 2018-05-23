@@ -69,6 +69,12 @@
     <Compile Include="DataModel\MetadataComparison.cs" />
     <Compile Include="AppCode\ConnectionType.cs" />
     <Compile Include="AppCode\LockRedraw.cs" />
+    <Compile Include="Forms\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
@@ -93,6 +99,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SystemComparerPluginControl.resx">
       <DependentUpon>SystemComparerPluginControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -126,7 +135,7 @@
       <Version>1.2018.4.16</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>9.0.1</Version>
+      <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
       <Version>4.6.2</Version>
@@ -150,6 +159,7 @@
     <ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
       <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+	  <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
     <PropertyGroup>
       <OutputAssembly>$(OutputPath)Merged\CRMP.XTBPlugin.SystemComparer.dll</OutputAssembly>
