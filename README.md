@@ -29,6 +29,11 @@ Click on the small icons in the front of the list item, you can expand or collap
 
 ![Compare and Enjoy][logo03]
 
-[logo01]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/01_find_plugin.png "Find Plugin"
-[logo02]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/02_execute_plugin.png "Execute Plugin"
-[logo03]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/03_enjoy_plugin.png "Compare and Enjoy"
+[logo01]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/01_find_plugin.PNG "Find Plugin"
+[logo02]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/02_execute_plugin.PNG "Execute Plugin"
+[logo03]: https://github.com/iggsn/XTBPlugin.SystemComparerer/raw/master/Documentation/03_enjoy_plugin.PNG "Compare and Enjoy"
+
+## Next steps
+
+* improve compare-screen
+* add more components to compare like views and forms etc.
