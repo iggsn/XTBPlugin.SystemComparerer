@@ -13,8 +13,11 @@
     <description>This is an XrmToolBox Plugin to compare two CRM Organizations for differences.</description>
     <releaseNotes>
       These are the included main changes
-
       1.2018.4.29: intial release to compare entity metadata.
+      1.2018.5.18: added icons and basic logging
+      1.2018.5.25: aligned file version number and downgraded NewtonSoft.Json to fit XrmToolBox
+                   added optional telemetry
+                   fixed false positives with MetadataId
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>XrmToolBox Plugins SystemComparer</tags>
@@ -23,6 +26,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\CRMP.XTBPlugin.*.dll" target="lib\net462\Plugins" />
+    <file src="bin\Release\Merged\CRMP.XTBPlugin.*.dll" target="lib\net462\Plugins" />
   </files>
 </package>

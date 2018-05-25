@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace CRMP.XTBPlugin.SystemComparer.Logic
+namespace CRMP.XTBPlugin.SystemComparer.AppCode
 {
     class LockRedraw : IDisposable
     {

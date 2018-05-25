@@ -55,6 +55,8 @@
             this.splitContainerCompare = new System.Windows.Forms.SplitContainer();
             this.webBrowserSource = new System.Windows.Forms.WebBrowser();
             this.webBrowserTarget = new System.Windows.Forms.WebBrowser();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tbbOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
@@ -70,18 +72,16 @@
             // 
             // toolStripMenu
             // 
-            this.toolStripMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.toolStripMenu.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
             this.tssSeparator1,
-            this.tbbLoadMetadata});
+            this.tbbLoadMetadata,
+            this.toolStripSeparator1,
+            this.tbbOptions});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(194, 25);
+            this.toolStripMenu.Size = new System.Drawing.Size(907, 25);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -314,6 +314,22 @@
             this.webBrowserTarget.Size = new System.Drawing.Size(443, 182);
             this.webBrowserTarget.TabIndex = 0;
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tbbOptions
+            // 
+            this.tbbOptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tbbOptions.Image = ((System.Drawing.Image)(resources.GetObject("tbbOptions.Image")));
+            this.tbbOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tbbOptions.Name = "tbbOptions";
+            this.tbbOptions.Size = new System.Drawing.Size(53, 22);
+            this.tbbOptions.Text = "Options";
+            this.tbbOptions.ToolTipText = "Shows Options Menu";
+            this.tbbOptions.Click += new System.EventHandler(this.tbbOptions_Click);
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -368,5 +384,7 @@
         private System.Windows.Forms.ColumnHeader typeColumnHeader;
         private System.Windows.Forms.WebBrowser webBrowserSource;
         private System.Windows.Forms.WebBrowser webBrowserTarget;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton tbbOptions;
     }
 }

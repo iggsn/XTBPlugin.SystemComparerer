@@ -2,7 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
+using CRMP.XTBPlugin.SystemComparer.Forms;
 using CRMP.XTBPlugin.SystemComparer.Logic;
 using McTools.Xrm.Connection;
 using XrmToolBox.Extensibility;
@@ -25,7 +27,9 @@ namespace CRMP.XTBPlugin.SystemComparer
         private ConnectionDetail _sourceConnection;
         private ConnectionDetail _targetConnection;
 
-        private Settings _mySettings;
+        internal Settings Settings;
+
+        private Telemetry _telemetry;
 
         public new event EventHandler OnRequestConnection;
 
@@ -54,17 +58,25 @@ namespace CRMP.XTBPlugin.SystemComparer
             /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
                 new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
+            bool loadedSettings;
+
             // Loads or creates the settings for the plugin
-            if (!SettingsManager.Instance.TryLoad(GetType(), out _mySettings))
+            if (!SettingsManager.Instance.TryLoad(GetType(), out Settings))
             {
-                _mySettings = new Settings();
+                Settings = new Settings();
 
                 LogWarning("Settings not found => a new settings file has been created!");
+                loadedSettings = false;
             }
             else
             {
                 LogInfo("Settings found and loaded");
+                loadedSettings = true;
             }
+
+            _telemetry = new Telemetry(this);
+            _telemetry.LogEvent(EventName.PluginStart);
+            _telemetry.LogEvent(loadedSettings ? EventName.SettingsLoaded : EventName.SettingsCreated);
 
             InitBrowser(webBrowserSource);
             InitBrowser(webBrowserTarget);
@@ -108,33 +120,47 @@ namespace CRMP.XTBPlugin.SystemComparer
              }
          }*/
 
+        #region ToolbarClicks
+        /// <summary>
+        /// Closes the Plugin
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tsbClose_Click(object sender, EventArgs e)
         {
             LogInfo("Closing the Plugin on demand.");
+            _telemetry.LogEvent(EventName.PluginClosed);
             CloseTool();
         }
 
         /// <summary>
-        /// This event occurs when the plugin is closed
+        /// Loads the Metadata from both CRM Systems
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
+        private void tbbLoadMetadata_Click(object sender, EventArgs e)
         {
-            // Before leaving, save the settings
-            SettingsManager.Instance.Save(GetType(), _mySettings);
+            LogInfo("Clicked on Load Entities button.");
+            LoadEntites();
+            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
         }
 
         /// <summary>
-        /// This event occurs when the connection has been updated in XrmToolBox
+        /// Shows the Options Dialog
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MyPluginControl_ConnectionUpdated(object sender, ConnectionUpdatedEventArgs e)
+        private void tbbOptions_Click(object sender, EventArgs e)
         {
-            _mySettings.LastUsedOrganizationWebappUrl = e.ConnectionDetail.WebApplicationUrl;
-            LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
+            bool allowLogUsage = Settings.AllowLogUsage;
+
+            Options optionDialog = new Options(this);
+            if (optionDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                LogInfo(Settings.AllowLogUsage is true ? "Statistics accepted." : "Statistics denied.");
+            }
         }
+        #endregion
 
         private void buttonSourceChange_Click(object sender, EventArgs e)
         {
@@ -180,6 +206,14 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
 
+        public override void ClosingPlugin(PluginCloseInfo info)
+        {
+            SaveSettings();
+            _telemetry.Dispose();
+
+            base.ClosingPlugin(info);
+        }
+
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
             string actionName = "", object parameter = null)
         {
@@ -204,11 +238,11 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
 
-        private void tbbLoadMetadata_Click(object sender, EventArgs e)
+        protected override void OnConnectionUpdated(ConnectionUpdatedEventArgs e)
         {
-            LogInfo("Clicked on Load Entities button.");
-            LoadEntites();
-            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
+            LogInfo("Connection has changed to: {0}", e.ConnectionDetail.WebApplicationUrl);
+
+            base.OnConnectionUpdated(e);
         }
 
         private void LoadEntites()
@@ -395,6 +429,13 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
+        }
+
+        public void SaveSettings()
+        {
+            LogInfo("Saving Settings");
+            _telemetry.LogEvent(EventName.SettingsSaved);
+            SettingsManager.Instance.Save(typeof(SystemComparerPluginControl), Settings);
         }
 
         private void LogHandler(object sender, EventArgs e)

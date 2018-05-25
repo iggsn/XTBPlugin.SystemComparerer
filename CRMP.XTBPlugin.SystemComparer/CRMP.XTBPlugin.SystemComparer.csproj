@@ -64,9 +64,18 @@
     <Reference Include="System.Workflow.Runtime" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCode\EventName.cs" />
+    <Compile Include="AppCode\Telemetry.cs" />
+    <Compile Include="AppCode\TelemetryEventType.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
-    <Compile Include="Logic\ConnectionType.cs" />
-    <Compile Include="Logic\LockRedraw.cs" />
+    <Compile Include="AppCode\ConnectionType.cs" />
+    <Compile Include="AppCode\LockRedraw.cs" />
+    <Compile Include="Forms\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
@@ -91,11 +100,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SystemComparerPluginControl.resx">
       <DependentUpon>SystemComparerPluginControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ILMerge.Tools">
+      <Version>2.14.1208</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.ApplicationInsights">
+      <Version>2.6.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies">
       <Version>9.0.2.3</Version>
     </PackageReference>
@@ -139,6 +157,17 @@
 )</PostBuildEvent>
   </PropertyGroup>
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <PropertyGroup>
+      <OutputAssembly>$(OutputPath)Merged\CRMP.XTBPlugin.SystemComparer.dll</OutputAssembly>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutputPath)Merged" />
+    <Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
+    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
