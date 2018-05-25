@@ -20,8 +20,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Forms
                 settings = new Settings();
             }
 
-            checkBoxAllowStatistics.Checked = settings.AllowLogUsage.GetValueOrDefault(false);
-            checkBoxSendExceptions.Checked = settings.AllowExceptionLogging.GetValueOrDefault(false);
+            checkBoxAllowStatistics.Checked = settings.AllowLogUsage;
+            checkBoxSendExceptions.Checked = settings.AllowExceptionLogging;
         }
 
         internal Settings GetSettings()

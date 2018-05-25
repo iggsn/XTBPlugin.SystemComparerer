@@ -46,7 +46,7 @@ namespace CRMP.XTBPlugin.SystemComparer.AppCode
 
         public void LogData(TelemetryEventType eventType, string action, Exception exception = null)
         {
-            if (!_pluginControl.Settings.AllowLogUsage.GetValueOrDefault(false))
+            if (!_pluginControl.Settings.AllowLogUsage)
             {
                 return;
             }

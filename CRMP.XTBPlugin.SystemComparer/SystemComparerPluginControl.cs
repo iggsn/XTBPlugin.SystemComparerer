@@ -58,8 +58,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
                 new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
 
-            _telemetry = new Telemetry(this);
-            _telemetry.LogEvent(EventName.PluginStart);
+            bool loadedSettings;
 
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out Settings))
@@ -67,13 +66,17 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Settings = new Settings();
 
                 LogWarning("Settings not found => a new settings file has been created!");
-                _telemetry.LogEvent(EventName.SettingsCreated);
+                loadedSettings = false;
             }
             else
             {
                 LogInfo("Settings found and loaded");
-                _telemetry.LogEvent(EventName.SettingsLoaded);
+                loadedSettings = true;
             }
+
+            _telemetry = new Telemetry(this);
+            _telemetry.LogEvent(EventName.PluginStart);
+            _telemetry.LogEvent(loadedSettings ? EventName.SettingsLoaded : EventName.SettingsCreated);
 
             InitBrowser(webBrowserSource);
             InitBrowser(webBrowserTarget);
@@ -149,7 +152,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         /// <param name="e"></param>
         private void tbbOptions_Click(object sender, EventArgs e)
         {
-            bool allowLogUsage = Settings.AllowLogUsage.GetValueOrDefault(false);
+            bool allowLogUsage = Settings.AllowLogUsage;
 
             Options optionDialog = new Options(this);
             if (optionDialog.ShowDialog(this) == DialogResult.OK)

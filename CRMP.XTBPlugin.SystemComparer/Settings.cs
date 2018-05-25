@@ -11,11 +11,11 @@
         /// <summary>
         /// Enables the event logging to Application Insight
         /// </summary>
-        public bool? AllowLogUsage { get; set; }
+        public bool AllowLogUsage { get; set; }
 
         /// <summary>
         /// Enables the Exception Logging to Application Insight
         /// </summary>
-        public bool? AllowExceptionLogging { get; set; }
+        public bool AllowExceptionLogging { get; set; }
     }
 }
