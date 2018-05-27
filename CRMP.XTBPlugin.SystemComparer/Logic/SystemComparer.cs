@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
@@ -42,43 +40,6 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Attributes);
 
             customzationRoot.EntitiesRaw = entitiesMetadata;
-
-            /*reportProgress(0, $"Processing Entity Metadata from {connectionType.ToString()}");
-
-            foreach (EntityMetadata entityMetadata in entitiesMetadata)
-            {
-                CustomizationEntity customizationEntity = new CustomizationEntity(entityMetadata.LogicalName, entityMetadata);
-
-                customzationRoot.Entities.Add(customizationEntity);
-
-                foreach (AttributeMetadata attributeMetadata in entityMetadata.Attributes)
-                {
-                    CustomizationAttribute customizationAttribute = new CustomizationAttribute(attributeMetadata.LogicalName,attributeMetadata);
-
-                    customizationEntity.Attributes.Add(customizationAttribute);
-                }
-            }
-
-            QueryExpression query = new QueryExpression
-            {
-                EntityName = "systemform",
-                ColumnSet = new ColumnSet(true),
-                PageInfo = new PagingInfo
-                {
-                    Count = 5000,
-                    PageNumber = 1,
-                    PagingCookie = null
-                },
-                Orders =
-                {
-                    new OrderExpression("objecttypecode", OrderType.Ascending)
-                }
-            };
-
-            reportProgress(0, $"Retrieving and processing Forms from {connectionType.ToString()}");
-            ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
-
-            crmServiceClient.RetrieveMultiple(query);*/
         }
 
         public void RetrieveOrganization(ConnectionType connectionType, Action<int, string> reportProgress)
@@ -99,11 +60,52 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             };
 
             reportProgress(0, $"Retrieving and processing Organization data from {connectionType.ToString()}");
-            ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
+            customzationRoot.Organizations = ExecuteQueryWithPaging(query, crmServiceClient);
+        }
 
-            EntityCollection response = crmServiceClient.RetrieveMultiple(query);
+        public void RetrieveForms(ConnectionType connectionType, Action<int, string> reportProgress)
+        {
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
+            CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
 
-            customzationRoot.Organizations = response.Entities.ToList();
+            QueryExpression query = new QueryExpression
+            {
+                EntityName = "systemform",
+                ColumnSet = new ColumnSet(true),
+                PageInfo = new PagingInfo
+                {
+                    Count = 5000,
+                    PageNumber = 1,
+                    PagingCookie = null
+                },
+                Orders =
+                {
+                    new OrderExpression("objecttypecode", OrderType.Ascending),
+                    new OrderExpression("name", OrderType.Ascending),
+                    //new OrderExpression("type", OrderType.Ascending)
+                }
+            };
+
+            reportProgress(0, $"Retrieving and processing system forms data from {connectionType.ToString()}");
+            List<Entity> formsResult = ExecuteQueryWithPaging(query, crmServiceClient);
+
+            foreach (Entity form in formsResult)
+            {
+                string entityName = form.GetAttributeValue<string>("objecttypecode");
+                string formtype = form.FormattedValues["type"];
+
+                if (!customizationRoot.Forms.ContainsKey(entityName))
+                {
+                   customizationRoot.Forms.Add(entityName, new Dictionary<string, List<Entity>>());
+                }
+
+                if (!customizationRoot.Forms[entityName].ContainsKey(formtype))
+                {
+                    customizationRoot.Forms[entityName].Add(formtype, new List<Entity>());
+                }
+
+                customizationRoot.Forms[entityName][formtype].Add(form);
+            }
         }
 
         private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)
@@ -132,9 +134,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             }
         }
 
-        private void ExecuteQueryWithPaging<TCustomization>(QueryExpression query, CrmServiceClient crmServiceClient, List<TCustomization> children)
-            where TCustomization : new()
+        private List<Entity> ExecuteQueryWithPaging(QueryExpression query, CrmServiceClient crmServiceClient)
         {
+            List<Entity> results = new List<Entity>();
             while (true)
             {
                 RetrieveMultipleRequest request = new RetrieveMultipleRequest()
@@ -147,11 +149,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
                 foreach (Entity entity in response.EntityCollection.Entities)
                 {
-                    Type classType = typeof(TCustomization);
-                    ConstructorInfo classConstructor = classType.GetConstructor(new [] { typeof(string), typeof(Entity) });
-                    TCustomization classInstance = (TCustomization)classConstructor.Invoke(new object[] { entity.LogicalName, entity });
-
-                    children.Add(classInstance);
+                    results.Add(entity);
                 }
 
                 if (response.EntityCollection.MoreRecords)
@@ -164,6 +162,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     break;
                 }
             }
+
+            return results;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 
@@ -12,13 +13,13 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
         public List<Entity> Organizations { get; set; }
 
-        public List<CustomizationForms> Forms { get; private set; }
+        public Dictionary<string, Dictionary<string, List<Entity>>> Forms { get; set; }
 
         public CustomizationRoot()
         {
             Name = "Root";
             EntitiesRaw = new List<EntityMetadata>();
-            Forms = new List<CustomizationForms>();
+            Forms = new Dictionary<string, Dictionary<string, List<Entity>>>();
         }
     }
 }

@@ -142,7 +142,6 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             LogInfo("Clicked on Load Entities button.");
             LoadEntites();
-            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
         }
 
         /// <summary>
@@ -256,10 +255,12 @@ namespace CRMP.XTBPlugin.SystemComparer
                 {
                     LogInfo("Start retieving metadata on Source");
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
-                    //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Source, worker.ReportProgress);
                     LogInfo("Start retieving metadata on Target");
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
-                    //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
