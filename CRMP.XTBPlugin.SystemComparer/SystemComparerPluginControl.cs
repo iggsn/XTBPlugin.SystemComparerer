@@ -14,7 +14,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin
+    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin, IAboutPlugin
     {
         const int StateImageIndexDashPlus = 0;
         const int StateImageIndexDashMinus = 1;
@@ -442,6 +442,11 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void LogHandler(object sender, EventArgs e)
         {
             LogInfo("From Delegate");
+        }
+
+        public void ShowAboutDialog()
+        {
+            throw new NotImplementedException();
         }
     }
 }

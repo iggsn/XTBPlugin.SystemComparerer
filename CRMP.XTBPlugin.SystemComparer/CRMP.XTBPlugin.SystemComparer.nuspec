@@ -22,7 +22,7 @@
     <copyright>Copyright 2018</copyright>
     <tags>XrmToolBox Plugins SystemComparer</tags>
     <dependencies>
-      <dependency id="XrmToolBox" version="1.2018.4.16" />
+      <dependency id="XrmToolBox" version="1.2018.6.25" />
     </dependencies>
   </metadata>
   <files>
