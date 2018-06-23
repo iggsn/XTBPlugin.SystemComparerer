@@ -163,9 +163,14 @@
   IF NOT EXIST Plugins mkdir Plugins
   move /Y CRMP.XTBPlugin.*.dll Plugins
   move /Y CRMP.XTBPlugin.*.pdb Plugins
+)
+if $(ConfigurationName) == ReleaseWithPublish (
+  IF NOT EXIST Merged mkdir Merged
+  move /Y CRMP.XTBPlugin.*.dll Merged
+  move /Y CRMP.XTBPlugin.*.pdb Merged
 )</PostBuildEvent>
   </PropertyGroup>
-  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'ReleaseVSTS'">
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'ReleaseWithPublish'">
     <ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
       <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
