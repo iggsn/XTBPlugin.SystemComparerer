@@ -159,21 +159,7 @@
   move /Y CRMP.XTBPlugin.*.pdb Plugins
 )</PostBuildEvent>
 	</PropertyGroup>
-	<!--  <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <ItemGroup>
-      <InputAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
-      <InputAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
-      <InputAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
-    </ItemGroup>
-    <ItemGroup>
-      <DoNotInternalizeAssemblies Include="CRMP.XTBPlugin.SystemComparer.dll" />
-    </ItemGroup>
-    <ILRepack Parallel="true" Internalize="true" InternalizeExclude="@(DoNotInternalizeAssemblies)" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" OutputFile="$(OutputPath)\$(AssemblyName).dll" />
-  </Target>-->
 	<Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-		<!-- The ILRepack task will grab all build ouput assemblies
-and merge them into a single exe file for easy distribution and integration
--->
 		<MakeDir Directories="$(OutputPath)Merged" />
 		<ItemGroup>
 			<MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
