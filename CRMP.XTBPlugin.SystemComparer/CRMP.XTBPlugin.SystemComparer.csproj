@@ -164,7 +164,7 @@
   move /Y CRMP.XTBPlugin.*.dll Plugins
   move /Y CRMP.XTBPlugin.*.pdb Plugins
 )
-if $(ConfigurationName) == ReleaseWithPublish (
+if $(ConfigurationName) == Release (
   IF NOT EXIST Merged mkdir Merged
   move /Y CRMP.XTBPlugin.*.dll Merged
   move /Y CRMP.XTBPlugin.*.pdb Merged
