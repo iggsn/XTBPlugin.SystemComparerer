@@ -444,9 +444,13 @@ namespace CRMP.XTBPlugin.SystemComparer
             LogInfo("From Delegate");
         }
 
+        #region IAboutDialog
         public void ShowAboutDialog()
         {
-            throw new NotImplementedException();
+            About about = new About();
+            about.StartPosition = FormStartPosition.CenterParent;
+            about.ShowDialog();
         }
+        #endregion
     }
 }
