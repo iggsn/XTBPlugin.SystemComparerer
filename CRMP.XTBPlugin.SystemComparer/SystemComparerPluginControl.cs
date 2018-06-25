@@ -101,24 +101,24 @@ namespace CRMP.XTBPlugin.SystemComparer
             doc.Write("<body>");
             doc.Write("</body>");
             doc.Write("</html>");
-            //doc.Window.Scroll += new HtmlElementEventHandler(Window_Scroll);
+            doc.Window.Scroll += new HtmlElementEventHandler(Window_Scroll);
         }
 
-        /* void Window_Scroll(object sender, HtmlElementEventArgs e)
+        void Window_Scroll(object sender, HtmlElementEventArgs e)
          {
              HtmlWindow window = (HtmlWindow)sender;
 
              if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
              {
-                 TargetWebBrowser.Document.Body.ScrollTop = SourceWebBrowser.Document.Body.ScrollTop;
-                 TargetWebBrowser.Document.Body.ScrollLeft = SourceWebBrowser.Document.Body.ScrollLeft;
+                 webBrowserTarget.Document.Body.ScrollTop = webBrowserSource.Document.Body.ScrollTop;
+                 webBrowserTarget.Document.Body.ScrollLeft = webBrowserSource.Document.Body.ScrollLeft;
              }
              else
              {
-                 SourceWebBrowser.Document.Body.ScrollTop = TargetWebBrowser.Document.Body.ScrollTop;
-                 SourceWebBrowser.Document.Body.ScrollLeft = TargetWebBrowser.Document.Body.ScrollLeft;
+                 webBrowserSource.Document.Body.ScrollTop = webBrowserTarget.Document.Body.ScrollTop;
+                 webBrowserSource.Document.Body.ScrollLeft = webBrowserTarget.Document.Body.ScrollLeft;
              }
-         }*/
+         }
 
         #region ToolbarClicks
         /// <summary>
