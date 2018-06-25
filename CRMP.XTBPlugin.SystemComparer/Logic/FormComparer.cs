@@ -4,30 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class MetadataComparer : ComparerBase
+    public class FormComparer : ComparerBase
     {
-        private List<string> ignoreList = new List<string> { "MetadataId" };
+        private List<string> ignoreList = new List<string> { };
 
-        public EventHandler<EventArgs> LogHandler;
-
-        public MetadataComparer()
+        public FormComparer()
         {  }
 
-        public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
+        public MetadataComparison Compare(string name, Dictionary<string, Dictionary<string, List<Entity>>> source, Dictionary<string, Dictionary<string, List<Entity>>> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
 
             return entities;
-        }
-
-        private void OnLogMessageRaised(EventArgs e)
-        {
-            LogHandler?.Invoke(this, e);
         }
 
         private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
@@ -49,12 +43,19 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<EntityMetadata>)) //&& ComparisonTypeMap.IsTypeComparisonType(type))
+                    if (type != typeof(Dictionary<string, Dictionary<string, List<Entity>>>) 
+                        && type != typeof(Dictionary<string, List<Entity>>)
+                        && type != typeof(List<Entity>))
                     {
                         string name;
 
                         switch (type.Name)
                         {
+                            case "KeyValuePair`2":
+                            {
+                                name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
+                                break;
+                            }
                             case "EntityMetadata":
                             {
                                 name = ((EntityMetadata)(source ?? target)).LogicalName;
@@ -125,7 +126,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 }
             }
         }
-
+        
         private bool BuildArrayComparisonTypes(MetadataComparison parent, PropertyInfo prop, IEnumerable source, IEnumerable target)
         {
             bool isDifferent = false;

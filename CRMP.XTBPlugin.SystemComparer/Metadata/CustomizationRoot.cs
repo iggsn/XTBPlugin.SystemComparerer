@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 

@@ -255,11 +255,11 @@ namespace CRMP.XTBPlugin.SystemComparer
                 {
                     LogInfo("Start retieving metadata on Source");
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
-                    _systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
                     _systemComparer.RetrieveForms(ConnectionType.Source, worker.ReportProgress);
                     LogInfo("Start retieving metadata on Target");
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
-                    _systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
                     _systemComparer.RetrieveForms(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
@@ -287,8 +287,14 @@ namespace CRMP.XTBPlugin.SystemComparer
                     orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
                         emds._targetCustomizationRoot.Organizations);*/
 
+                    FormComparer formComparer = new FormComparer();
+                    MetadataComparison formComparison = null;
+                    formComparison = formComparer.Compare("Forms", emds._sourceCustomizationRoot.Forms,
+                        emds._targetCustomizationRoot.Forms);
+
                     comparisonListView.Items.Clear();
 
+                    AddItem(formComparison, null);
                     AddItem(comparison, null);
                     //AddItem(orgComparison, null);
                 },
