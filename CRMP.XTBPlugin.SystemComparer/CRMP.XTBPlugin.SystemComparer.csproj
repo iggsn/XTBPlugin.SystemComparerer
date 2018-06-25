@@ -96,6 +96,11 @@
     <Compile Include="Logic\SystemComparer.cs" />
     <Compile Include="Metadata\CustomizationForms.cs" />
     <Compile Include="Metadata\CustomizationRoot.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SystemComparerPlugin.cs" />
     <Compile Include="SystemComparerPluginControl.cs">
       <SubType>UserControl</SubType>
@@ -120,6 +125,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SystemComparerPluginControl.resx">
       <DependentUpon>SystemComparerPluginControl.cs</DependentUpon>
@@ -159,6 +168,15 @@
     <PackageReference Include="XrmToolBoxPackage">
       <Version>1.2018.6.25</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-fenster-schließen-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-aus-der-cloud-laden-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-support-24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
