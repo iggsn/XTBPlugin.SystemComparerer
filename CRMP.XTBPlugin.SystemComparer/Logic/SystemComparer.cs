@@ -108,6 +108,51 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             }
         }
 
+        public void RetrieveViews(ConnectionType connectionType, Action<int, string> reportProgress)
+        {
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
+            CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
+
+            QueryExpression query = new QueryExpression
+            {
+                EntityName = "savedquery",
+                ColumnSet = new ColumnSet(true),
+                PageInfo = new PagingInfo
+                {
+                    Count = 5000,
+                    PageNumber = 1,
+                    PagingCookie = null
+                },
+                Orders =
+                {
+                    new OrderExpression("returnedtypecode", OrderType.Ascending),
+                    new OrderExpression("name", OrderType.Ascending),
+                    //new OrderExpression("type", OrderType.Ascending)
+                }
+            };
+
+            reportProgress(0, $"Retrieving and processing system view data from {connectionType.ToString()}");
+            List<Entity> viewsResult = ExecuteQueryWithPaging(query, crmServiceClient);
+
+            foreach (Entity view in viewsResult)
+            {
+                string entityName = view.GetAttributeValue<string>("returnedtypecode");
+                string querytype = view.FormattedValues["querytype"];
+
+                if (!customizationRoot.Views.ContainsKey(entityName))
+                {
+                    customizationRoot.Views.Add(entityName, new Dictionary<string, List<Entity>>());
+                }
+
+                if (!customizationRoot.Views[entityName].ContainsKey(querytype))
+                {
+                    customizationRoot.Views[entityName].Add(querytype, new List<Entity>());
+                }
+
+                customizationRoot.Views[entityName][querytype].Add(view);
+            }
+        }
+
         private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)
         {
             switch (connectionType)

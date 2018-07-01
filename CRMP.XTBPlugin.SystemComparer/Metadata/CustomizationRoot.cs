@@ -14,11 +14,14 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
         public Dictionary<string, Dictionary<string, List<Entity>>> Forms { get; set; }
 
+        public Dictionary<string, Dictionary<string, List<Entity>>> Views { get; set; }
+
         public CustomizationRoot()
         {
             Name = "Root";
             EntitiesRaw = new List<EntityMetadata>();
             Forms = new Dictionary<string, Dictionary<string, List<Entity>>>();
+            Views = new Dictionary<string, Dictionary<string, List<Entity>>>();
         }
     }
 }

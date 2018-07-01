@@ -257,10 +257,12 @@ namespace CRMP.XTBPlugin.SystemComparer
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
                     _systemComparer.RetrieveForms(ConnectionType.Source, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Source, worker.ReportProgress);
                     LogInfo("Start retieving metadata on Target");
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
                     _systemComparer.RetrieveForms(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Target, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },

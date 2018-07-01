@@ -10,7 +10,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer : ComparerBase
     {
-        private List<string> ignoreList = new List<string> { "MetadataId" };
+        private readonly List<string> _ignoreList = new List<string> { "MetadataId", "ColumnNumber" };
 
         public EventHandler<EventArgs> LogHandler;
 
@@ -53,7 +53,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     {
                         string name;
 
-                        switch (type.Name)
+
+                       switch (type.Name)
                         {
                             case "EntityMetadata":
                             {
@@ -76,6 +77,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             case "BigIntAttributeMetadata":
                             case "EntityNameAttributeMetadata":
                             case "StateAttributeMetadata":
+                            case "MultiSelectPicklistAttributeMetadata":
                             case "StatusAttributeMetadata":
                                 {
                                 name = ((AttributeMetadata)(source ?? target)).LogicalName;
@@ -93,7 +95,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type) && !ignoreList.Any(s => parent.Name.Contains(s)))
+                    if (IsSimpleType(type) && !_ignoreList.Any(s => parent.Name.Contains(s)))
                     {
                         // for simple types just compare values
                          if (!Equals(source, target))
