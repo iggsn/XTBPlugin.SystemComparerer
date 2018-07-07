@@ -144,16 +144,16 @@
       <Version>2.6.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Deployment">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Workflow">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel">
       <Version>6.1.7600.16394</Version>
