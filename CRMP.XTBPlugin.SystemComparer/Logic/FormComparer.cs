@@ -14,7 +14,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         private List<string> ignoreList = new List<string> { };
 
         public FormComparer()
-        {  }
+        { }
 
         public MetadataComparison Compare(string name, Dictionary<string, Dictionary<string, List<Entity>>> source, Dictionary<string, Dictionary<string, List<Entity>>> target)
         {
@@ -43,7 +43,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(Dictionary<string, Dictionary<string, List<Entity>>>) 
+                    if (type != typeof(Dictionary<string, Dictionary<string, List<Entity>>>)
                         && type != typeof(Dictionary<string, List<Entity>>)
                         && type != typeof(List<Entity>))
                     {
@@ -52,15 +52,21 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         switch (type.Name)
                         {
                             case "KeyValuePair`2":
-                            {
-                                name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
-                                break;
-                            }
+                                {
+                                    //name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
+                                    name = ((dynamic)(source ?? target)).Key;
+                                    break;
+                                }
+                            case "Entity":
+                                {
+                                    name = ((Entity)(source ?? target)).LogicalName;
+                                    break;
+                                }
                             case "EntityMetadata":
-                            {
-                                name = ((EntityMetadata)(source ?? target)).LogicalName;
-                                break;
-                            }
+                                {
+                                    name = ((EntityMetadata)(source ?? target)).LogicalName;
+                                    break;
+                                }
                             case "AttributeMetadata":
                             case "StringAttributeMetadata":
                             case "MemoAttributeMetadata":
@@ -79,8 +85,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             case "StateAttributeMetadata":
                             case "StatusAttributeMetadata":
                                 {
-                                name = ((AttributeMetadata)(source ?? target)).LogicalName;
-                                break;
+                                    name = ((AttributeMetadata)(source ?? target)).LogicalName;
+                                    break;
                                 }
                             default:
                                 name = prop.Name;
@@ -94,14 +100,24 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type) && !ignoreList.Any(s => parent.Name.Contains(s)))
+                    if (type.Name.StartsWith("KeyValuePair"))
+                    {
+                        Type subtype = GetKeyValuePairType(source, target);
+                        if (subtype.Name.StartsWith("KeyValuePair"))
+                        {
+                            //originalParent.IsDifferent |= BuildArrayComparisonTypes(parent, prop, ((KeyValuePair<string, Dictionary<string, List<Entity>>>)source).Value, ((KeyValuePair<string, Dictionary<string, List<Entity>>>)target).Value);
+                            originalParent.IsDifferent |= BuildArrayComparisonTypes(parent, prop, ((dynamic) source).Value, ((dynamic) target).Value);
+                        }
+                    }
+
+                    if (IsSimpleType(type) && !ignoreList.Any(s => parent.Name.Contains(s)) && !type.Name.StartsWith("KeyValuePair"))
                     {
                         // for simple types just compare values
-                         if (!Equals(source, target))
-                         {
-                             originalParent.IsDifferent = true;
-                             parent.IsDifferent = true;
-                         }
+                        if (!Equals(source, target))
+                        {
+                            originalParent.IsDifferent = true;
+                            parent.IsDifferent = true;
+                        }
                     }
                     else if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
@@ -115,6 +131,11 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         {
                             if (p.CanRead)
                             {
+                                if (p.GetIndexParameters().Length > 0)
+                                {
+                                    continue;
+                                }
+
                                 object sourceValue = source != null ? p.GetValue(source, null) : null;
                                 object targetValue = target != null ? p.GetValue(target, null) : null;
 
@@ -126,7 +147,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 }
             }
         }
-        
+
         private bool BuildArrayComparisonTypes(MetadataComparison parent, PropertyInfo prop, IEnumerable source, IEnumerable target)
         {
             bool isDifferent = false;
