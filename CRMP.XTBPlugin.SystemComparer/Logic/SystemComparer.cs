@@ -29,7 +29,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             _targetConnection = targetConnection;
         }
 
-        public void RetrieveMetadata(ConnectionType connectionType, Action<int, string> reportProgress)
+        public void RetrieveMetadata(ConnectionType connectionType, bool includeAttributes , Action<int, string> reportProgress)
         {
             reportProgress(0, $"Fetching Entity Metadata from {connectionType.ToString()}");
 
@@ -37,7 +37,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
-            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Attributes);
+            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, includeAttributes ? EntityFilters.Attributes : EntityFilters.All);
 
             customzationRoot.EntitiesRaw = entitiesMetadata;
         }
@@ -63,8 +63,10 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             customzationRoot.Organizations = ExecuteQueryWithPaging(query, crmServiceClient);
         }
 
-        public void RetrieveForms(ConnectionType connectionType, Action<int, string> reportProgress)
+        public void RetrieveForms(ConnectionType connectionType, bool execute, Action<int, string> reportProgress)
         {
+            if (!execute) return;
+
             CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
             CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
 
@@ -108,8 +110,10 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             }
         }
 
-        public void RetrieveViews(ConnectionType connectionType, Action<int, string> reportProgress)
+        public void RetrieveViews(ConnectionType connectionType, bool execute, Action<int, string> reportProgress)
         {
+            if (!execute) return;
+
             CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
             CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
 

@@ -57,6 +57,10 @@
             this.webBrowserSource = new System.Windows.Forms.WebBrowser();
             this.webBrowserTarget = new System.Windows.Forms.WebBrowser();
             this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkboxViews = new System.Windows.Forms.CheckBox();
+            this.checkboxForms = new System.Windows.Forms.CheckBox();
+            this.checkboxWithAttributes = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).BeginInit();
@@ -68,6 +72,7 @@
             this.splitContainerCompare.Panel2.SuspendLayout();
             this.splitContainerCompare.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -133,7 +138,7 @@
             this.groupBox1.Controls.Add(this.labelSource);
             this.groupBox1.Location = new System.Drawing.Point(3, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(491, 98);
+            this.groupBox1.Size = new System.Drawing.Size(491, 94);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection";
@@ -330,10 +335,55 @@
             // 
             this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkboxViews);
+            this.groupBox2.Controls.Add(this.checkboxForms);
+            this.groupBox2.Controls.Add(this.checkboxWithAttributes);
+            this.groupBox2.Location = new System.Drawing.Point(501, 34);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(403, 94);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Settings";
+            // 
+            // checkboxViews
+            // 
+            this.checkboxViews.AutoSize = true;
+            this.checkboxViews.Location = new System.Drawing.Point(6, 65);
+            this.checkboxViews.Name = "checkboxViews";
+            this.checkboxViews.Size = new System.Drawing.Size(92, 17);
+            this.checkboxViews.TabIndex = 2;
+            this.checkboxViews.Text = "Include Views";
+            this.checkboxViews.UseVisualStyleBackColor = true;
+            this.checkboxViews.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
+            // checkboxForms
+            // 
+            this.checkboxForms.AutoSize = true;
+            this.checkboxForms.Location = new System.Drawing.Point(6, 42);
+            this.checkboxForms.Name = "checkboxForms";
+            this.checkboxForms.Size = new System.Drawing.Size(92, 17);
+            this.checkboxForms.TabIndex = 1;
+            this.checkboxForms.Text = "Include Forms";
+            this.checkboxForms.UseVisualStyleBackColor = true;
+            this.checkboxForms.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
+            // checkboxWithAttributes
+            // 
+            this.checkboxWithAttributes.Location = new System.Drawing.Point(6, 19);
+            this.checkboxWithAttributes.Name = "checkboxWithAttributes";
+            this.checkboxWithAttributes.Size = new System.Drawing.Size(151, 17);
+            this.checkboxWithAttributes.TabIndex = 0;
+            this.checkboxWithAttributes.Text = "Include Attribute Metadata";
+            this.checkboxWithAttributes.UseVisualStyleBackColor = true;
+            this.checkboxWithAttributes.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.splitContainerOverview);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
@@ -353,6 +403,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).EndInit();
             this.splitContainerCompare.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -386,5 +438,9 @@
         private System.Windows.Forms.WebBrowser webBrowserTarget;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tbbOptions;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkboxViews;
+        private System.Windows.Forms.CheckBox checkboxForms;
+        private System.Windows.Forms.CheckBox checkboxWithAttributes;
     }
 }

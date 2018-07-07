@@ -31,6 +31,8 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private Telemetry _telemetry;
 
+        private Configuration _configuration;
+
         public new event EventHandler OnRequestConnection;
 
         private Logic.SystemComparer _systemComparer;
@@ -78,8 +80,18 @@ namespace CRMP.XTBPlugin.SystemComparer
             _telemetry.LogEvent(EventName.PluginStart);
             _telemetry.LogEvent(loadedSettings ? EventName.SettingsLoaded : EventName.SettingsCreated);
 
+            _configuration = new Configuration();
+
+            InitConfiguration(_configuration);
             InitBrowser(webBrowserSource);
             InitBrowser(webBrowserTarget);
+        }
+
+        private void InitConfiguration(Configuration configuration)
+        {
+            checkboxWithAttributes.Checked = configuration.IncludeAttributeMetadata;
+            checkboxForms.Checked = configuration.IncludeForms;
+            checkboxViews.Checked = configuration.IncludeViews;
         }
 
         private void InitBrowser(WebBrowser webBrowser)
@@ -141,7 +153,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void tbbLoadMetadata_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Load Entities button.");
-            LoadEntites();
+            LoadEntities();
         }
 
         /// <summary>
@@ -244,7 +256,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             base.OnConnectionUpdated(e);
         }
 
-        private void LoadEntites()
+        private void LoadEntities()
         {
             _systemComparer = new Logic.SystemComparer(_sourceConnection, _targetConnection);
 
@@ -253,16 +265,16 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
-                    LogInfo("Start retieving metadata on Source");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
+                    LogInfo("Start retrieving metadata on Source");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
-                    _systemComparer.RetrieveForms(ConnectionType.Source, worker.ReportProgress);
-                    _systemComparer.RetrieveViews(ConnectionType.Source, worker.ReportProgress);
-                    LogInfo("Start retieving metadata on Target");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
+                    LogInfo("Start retrieving metadata on Target");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
-                    _systemComparer.RetrieveForms(ConnectionType.Target, worker.ReportProgress);
-                    _systemComparer.RetrieveViews(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Target, _configuration.IncludeViews, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
@@ -458,6 +470,27 @@ namespace CRMP.XTBPlugin.SystemComparer
             About about = new About();
             about.StartPosition = FormStartPosition.CenterParent;
             about.ShowDialog();
+        }
+        #endregion
+
+        #region ConfigurationClicks
+        private void checkboxAnyConfiguration_Click(object sender, EventArgs e)
+        {
+            if (sender is CheckBox configBox)
+            {
+                switch (configBox.Name)
+                {
+                    case "checkboxWithAttributes":
+                        _configuration.IncludeAttributeMetadata = checkboxWithAttributes.Checked;
+                        break;
+                    case "checkboxForms":
+                        _configuration.IncludeForms = checkboxForms.Checked;
+                        break;
+                    case "checkboxViews":
+                        _configuration.IncludeViews = checkboxViews.Checked;
+                        break;
+                }
+            }
         }
         #endregion
     }

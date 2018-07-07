@@ -76,6 +76,7 @@
     <Compile Include="AppCode\EventName.cs" />
     <Compile Include="AppCode\Telemetry.cs" />
     <Compile Include="AppCode\TelemetryEventType.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
     <Compile Include="AppCode\ConnectionType.cs" />
     <Compile Include="AppCode\LockRedraw.cs" />
