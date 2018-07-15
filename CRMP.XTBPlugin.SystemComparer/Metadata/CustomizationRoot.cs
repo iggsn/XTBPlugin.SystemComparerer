@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 
@@ -27,7 +28,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
     public class FormEntity
     {
-        public string Name { get; set; }
+        internal string Name { get; set; }
         public List<FormType> FormTypes { get; set; }
 
         public FormEntity(string name)
@@ -39,7 +40,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
     public class FormType
     {
-        public string Name { get; set; }
+        internal string Name { get; set; }
         public List<Entity> Forms { get; set; }
 
         public FormType(string name)
@@ -51,7 +52,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
     public class ViewEntity
     {
-        public string Name { get; set; }
+        internal string Name { get; set; }
         public List<ViewType> ViewTypes { get; set; }
 
         public ViewEntity(string name)
@@ -63,7 +64,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Metadata
 
     public class ViewType
     {
-        public string Name { get; set; }
+        internal string Name { get; set; }
         public List<Entity> Views { get; set; }
 
         public ViewType(string name)

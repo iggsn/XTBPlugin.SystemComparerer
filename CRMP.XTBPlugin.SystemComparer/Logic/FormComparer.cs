@@ -44,7 +44,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<FormEntity>) || type != typeof(List<FormType>) || type != typeof(List<Entity>))
+                    if (type != typeof(List<FormEntity>) && type != typeof(List<FormType>) && type != typeof(List<Entity>))
                     {
                         string name;
 

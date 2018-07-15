@@ -302,7 +302,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                     {
                         ViewComparer viewComparer = new ViewComparer();
                         MetadataComparison viewComparison = null;
-                        viewComparison = viewComparer.Compare("Forms", emds._sourceCustomizationRoot.Views,
+                        viewComparison = viewComparer.Compare("Views", emds._sourceCustomizationRoot.Views,
                             emds._targetCustomizationRoot.Views);
                         AddItem(viewComparison, null);
                     }

@@ -73,7 +73,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             QueryExpression query = new QueryExpression
             {
                 EntityName = "systemform",
-                ColumnSet = new ColumnSet("formid", "introducedversion", "description", "isairmerged", "iscustomizable", "formpresentation", "formxml", "componentstate", "isdesktopenabled", "formjson", "formidunique", "version", "versionnumber", "canbedeleted", "ismanaged", "formactivationstate", "uniquename", "type", "objecttypecode", "isdefault"),
+                ColumnSet = new ColumnSet("formid", "introducedversion", "description", "isairmerged", "iscustomizable", "formpresentation", "formxml", "componentstate", "isdesktopenabled", "formjson", "version", "versionnumber", "canbedeleted", "ismanaged", "formactivationstate", "uniquename", "type", "objecttypecode", "isdefault"),
                 PageInfo = new PagingInfo
                 {
                     Count = 5000,
@@ -124,7 +124,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             QueryExpression query = new QueryExpression
             {
                 EntityName = "savedquery",
-                ColumnSet = new ColumnSet("introducedversion", "description", "iscustomizable", "componentstate", "versionnumber", "canbedeleted", "ismanaged", "solutionid", "isdefault", "isuserdefined", "savedqueryid", "statecode", "savedqueryidunique", "conditionalformatting", "name", "querytype", "isquickfindquery", "columnsetxml", "offlinesqlquery", "queryappusage", "advancedgroupby", "fetchxml", "returnedtypecode", "isprivate", "iscustom", "layoutjson", "statuscode", "queryapi", "organizationtaborder", "layoutxml"),
+                ColumnSet = new ColumnSet("introducedversion", "description", "iscustomizable", "componentstate", "versionnumber", "canbedeleted", "ismanaged", "solutionid", "isdefault", "isuserdefined", "savedqueryid", "statecode", "conditionalformatting", "name", "querytype", "isquickfindquery", "columnsetxml", "offlinesqlquery", "queryappusage", "advancedgroupby", "fetchxml", "returnedtypecode", "isprivate", "iscustom", "layoutjson", "statuscode", "queryapi", "organizationtaborder", "layoutxml"),
                 PageInfo = new PagingInfo
                 {
                     Count = 5000,

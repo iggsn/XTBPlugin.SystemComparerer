@@ -44,7 +44,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<ViewEntity>) || type != typeof(List<ViewType>) || type != typeof(List<Entity>))
+                    if (type != typeof(List<ViewEntity>) && type != typeof(List<ViewType>) && type != typeof(List<Entity>))
                     {
                         string name;
 
@@ -60,11 +60,6 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             case "Entity":
                                 {
                                     name = ((Entity)(source ?? target)).LogicalName;
-                                    break;
-                                }
-                            case "EntityMetadata":
-                                {
-                                    name = ((EntityMetadata)(source ?? target)).LogicalName;
                                     break;
                                 }
                             case "AttributeMetadata":
