@@ -117,20 +117,20 @@ namespace CRMP.XTBPlugin.SystemComparer
         }
 
         void Window_Scroll(object sender, HtmlElementEventArgs e)
-         {
-             HtmlWindow window = (HtmlWindow)sender;
+        {
+            HtmlWindow window = (HtmlWindow)sender;
 
-             if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
-             {
-                 webBrowserTarget.Document.Body.ScrollTop = webBrowserSource.Document.Body.ScrollTop;
-                 webBrowserTarget.Document.Body.ScrollLeft = webBrowserSource.Document.Body.ScrollLeft;
-             }
-             else
-             {
-                 webBrowserSource.Document.Body.ScrollTop = webBrowserTarget.Document.Body.ScrollTop;
-                 webBrowserSource.Document.Body.ScrollLeft = webBrowserTarget.Document.Body.ScrollLeft;
-             }
-         }
+            if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
+            {
+                webBrowserTarget.Document.Body.ScrollTop = webBrowserSource.Document.Body.ScrollTop;
+                webBrowserTarget.Document.Body.ScrollLeft = webBrowserSource.Document.Body.ScrollLeft;
+            }
+            else
+            {
+                webBrowserSource.Document.Body.ScrollTop = webBrowserTarget.Document.Body.ScrollTop;
+                webBrowserSource.Document.Body.ScrollLeft = webBrowserTarget.Document.Body.ScrollLeft;
+            }
+        }
 
         #region ToolbarClicks
         /// <summary>
@@ -289,28 +289,38 @@ namespace CRMP.XTBPlugin.SystemComparer
 
                     var emds = (Logic.SystemComparer)args.Result;
 
-                    MetadataComparer comparer = new MetadataComparer();
-                    //comparer.LogHandler += LogHandler;
-
-                    MetadataComparison comparison = null;
-                    comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
-                        emds._targetCustomizationRoot.EntitiesRaw);
+                    comparisonListView.Items.Clear();
 
                     /*OrganizationComparer orgComparer = new OrganizationComparer();
                     MetadataComparison orgComparison = null;
                     orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
                         emds._targetCustomizationRoot.Organizations);*/
 
-                    FormComparer formComparer = new FormComparer();
-                    MetadataComparison formComparison = null;
-                    formComparison = formComparer.Compare("Forms", emds._sourceCustomizationRoot.Forms,
-                        emds._targetCustomizationRoot.Forms);
 
-                    comparisonListView.Items.Clear();
 
-                    AddItem(formComparison, null);
+                    if (_configuration.IncludeViews)
+                    {
+                        ViewComparer viewComparer = new ViewComparer();
+                        MetadataComparison viewComparison = null;
+                        viewComparison = viewComparer.Compare("Forms", emds._sourceCustomizationRoot.Views,
+                            emds._targetCustomizationRoot.Views);
+                        AddItem(viewComparison, null);
+                    }
+
+                    if (_configuration.IncludeForms)
+                    {
+                        FormComparer formComparer = new FormComparer();
+                        MetadataComparison formComparison;
+                        formComparison = formComparer.Compare("Forms", emds._sourceCustomizationRoot.Forms,
+                            emds._targetCustomizationRoot.Forms);
+                        AddItem(formComparison, null);
+                    }
+
+                    MetadataComparer comparer = new MetadataComparer();
+                    MetadataComparison comparison = null;
+                    comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
+                        emds._targetCustomizationRoot.EntitiesRaw);
                     AddItem(comparison, null);
-                    //AddItem(orgComparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });

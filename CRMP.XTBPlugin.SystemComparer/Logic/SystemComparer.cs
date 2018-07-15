@@ -73,7 +73,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             QueryExpression query = new QueryExpression
             {
                 EntityName = "systemform",
-                ColumnSet = new ColumnSet(true),
+                ColumnSet = new ColumnSet("formid", "introducedversion", "description", "isairmerged", "iscustomizable", "formpresentation", "formxml", "componentstate", "isdesktopenabled", "formjson", "formidunique", "version", "versionnumber", "canbedeleted", "ismanaged", "formactivationstate", "uniquename", "type", "objecttypecode", "isdefault"),
                 PageInfo = new PagingInfo
                 {
                     Count = 5000,
@@ -94,19 +94,23 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             foreach (Entity form in formsResult)
             {
                 string entityName = form.GetAttributeValue<string>("objecttypecode");
-                string formtype = form.FormattedValues["type"];
+                string typeName = form.FormattedValues["type"];
 
-                if (!customizationRoot.Forms.ContainsKey(entityName))
+                FormEntity formEntity = customizationRoot.Forms.Find(e => e.Name == entityName);
+                if (formEntity == null)
                 {
-                   customizationRoot.Forms.Add(entityName, new Dictionary<string, List<Entity>>());
+                    formEntity = new FormEntity(entityName);
+                    customizationRoot.Forms.Add(formEntity);
                 }
 
-                if (!customizationRoot.Forms[entityName].ContainsKey(formtype))
+                FormType formType = formEntity.FormTypes.Find(t => t.Name == typeName);
+                if (formType == null)
                 {
-                    customizationRoot.Forms[entityName].Add(formtype, new List<Entity>());
+                    formType = new FormType(typeName);
+                    formEntity.FormTypes.Add(formType);
                 }
 
-                customizationRoot.Forms[entityName][formtype].Add(form);
+                formType.Forms.Add(form);
             }
         }
 
@@ -120,7 +124,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             QueryExpression query = new QueryExpression
             {
                 EntityName = "savedquery",
-                ColumnSet = new ColumnSet(true),
+                ColumnSet = new ColumnSet("introducedversion", "description", "iscustomizable", "componentstate", "versionnumber", "canbedeleted", "ismanaged", "solutionid", "isdefault", "isuserdefined", "savedqueryid", "statecode", "savedqueryidunique", "conditionalformatting", "name", "querytype", "isquickfindquery", "columnsetxml", "offlinesqlquery", "queryappusage", "advancedgroupby", "fetchxml", "returnedtypecode", "isprivate", "iscustom", "layoutjson", "statuscode", "queryapi", "organizationtaborder", "layoutxml"),
                 PageInfo = new PagingInfo
                 {
                     Count = 5000,
@@ -141,19 +145,23 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             foreach (Entity view in viewsResult)
             {
                 string entityName = view.GetAttributeValue<string>("returnedtypecode");
-                string querytype = view.FormattedValues["querytype"];
+                string typeName = view.FormattedValues["querytype"];
 
-                if (!customizationRoot.Views.ContainsKey(entityName))
+                ViewEntity viewEntity = customizationRoot.Views.Find(e => e.Name == entityName);
+                if (viewEntity == null)
                 {
-                    customizationRoot.Views.Add(entityName, new Dictionary<string, List<Entity>>());
+                    viewEntity = new ViewEntity(entityName);
+                    customizationRoot.Views.Add(viewEntity);
                 }
 
-                if (!customizationRoot.Views[entityName].ContainsKey(querytype))
+                ViewType viewType = viewEntity.ViewTypes.Find(t => t.Name == typeName);
+                if (viewType == null)
                 {
-                    customizationRoot.Views[entityName].Add(querytype, new List<Entity>());
+                    viewType = new ViewType(typeName);
+                    viewEntity.ViewTypes.Add(viewType);
                 }
 
-                customizationRoot.Views[entityName][querytype].Add(view);
+                viewType.Views.Add(view);
             }
         }
 

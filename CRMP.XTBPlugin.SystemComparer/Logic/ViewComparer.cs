@@ -10,14 +10,14 @@ using Microsoft.Xrm.Sdk.Metadata;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class FormComparer : ComparerBase
+    public class ViewComparer : ComparerBase
     {
         private List<string> ignoreList = new List<string> { };
 
-        public FormComparer()
+        public ViewComparer()
         { }
 
-        public MetadataComparison Compare(string name, List<FormEntity> source, List<FormEntity> target)
+        public MetadataComparison Compare(string name, List<ViewEntity> source, List<ViewEntity> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
@@ -44,14 +44,14 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<FormEntity>) || type != typeof(List<FormType>) || type != typeof(List<Entity>))
+                    if (type != typeof(List<ViewEntity>) || type != typeof(List<ViewType>) || type != typeof(List<Entity>))
                     {
                         string name;
 
                         switch (type.Name)
                         {
-                            case "FormEntity":
-                            case "FormType":
+                            case "ViewEntity":
+                            case "ViewType":
                                 {
                                     //name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
                                     name = ((dynamic)(source ?? target)).Name;

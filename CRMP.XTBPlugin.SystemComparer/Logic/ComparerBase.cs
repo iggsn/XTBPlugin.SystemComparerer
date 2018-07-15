@@ -26,25 +26,6 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             return type;
         }
 
-        protected static Type GetKeyValuePairType(object source, object target)
-        {
-            Type type = null;
-
-            if (source != null && target != null)
-            {
-                if (((dynamic)source).Value.GetType() == ((dynamic)target).Value.GetType())
-                {
-                    type = ((dynamic)source).Value.GetType();
-                }
-            }
-            else
-            {
-                type = ((dynamic)(source ?? target)).Value.GetType();
-            }
-
-            return type;
-        }
-
         protected static bool IsSimpleType(Type type)
         {
             return (!type.IsClass || type == typeof(String));
