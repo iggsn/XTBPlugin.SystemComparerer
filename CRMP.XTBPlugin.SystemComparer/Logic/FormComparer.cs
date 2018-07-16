@@ -6,18 +6,17 @@ using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Metadata;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class FormComparer : ComparerBase
     {
-        private List<string> ignoreList = new List<string> { };
+        private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion" };
 
         public FormComparer()
         { }
 
-        public MetadataComparison Compare(string name, List<FormEntity> source, List<FormEntity> target)
+        public MetadataComparison Compare(string name, List<CustomizationEntity> source, List<CustomizationEntity> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
@@ -44,14 +43,14 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<FormEntity>) && type != typeof(List<FormType>) && type != typeof(List<Entity>))
+                    if (type != typeof(List<CustomizationEntity>) && type != typeof(List<CustomizationType>) && type != typeof(List<Entity>))
                     {
                         string name;
 
                         switch (type.Name)
                         {
-                            case "FormEntity":
-                            case "FormType":
+                            case "CustomizationEntity":
+                            case "CustomizationType":
                                 {
                                     //name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
                                     name = ((dynamic)(source ?? target)).Name;
@@ -62,30 +61,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                                     name = ((Entity)(source ?? target)).LogicalName;
                                     break;
                                 }
-                            case "EntityMetadata":
+                            case "BooleanManagedProperty":
                                 {
-                                    name = ((EntityMetadata)(source ?? target)).LogicalName;
-                                    break;
-                                }
-                            case "AttributeMetadata":
-                            case "StringAttributeMetadata":
-                            case "MemoAttributeMetadata":
-                            case "DoubleAttributeMetadata":
-                            case "IntegrationAttributeMetadata":
-                            case "MoneyAttributeMetadata":
-                            case "DateTimeAttributeMetadata":
-                            case "LookupAttributeMetadata":
-                            case "DecimalAttributeMetadata":
-                            case "PicklistAttributeMetadata":
-                            case "IntegerAttributeMetadata":
-                            case "BooleanAttributeMetadata":
-                            case "ImageAttributeMetadata":
-                            case "BigIntAttributeMetadata":
-                            case "EntityNameAttributeMetadata":
-                            case "StateAttributeMetadata":
-                            case "StatusAttributeMetadata":
-                                {
-                                    name = ((AttributeMetadata)(source ?? target)).LogicalName;
+                                    name = ((BooleanManagedProperty)(source ?? target)).ManagedPropertyLogicalName;
                                     break;
                                 }
                             default:

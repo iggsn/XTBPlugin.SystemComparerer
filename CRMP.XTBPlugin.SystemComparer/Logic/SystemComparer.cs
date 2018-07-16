@@ -96,21 +96,21 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 string entityName = form.GetAttributeValue<string>("objecttypecode");
                 string typeName = form.FormattedValues["type"];
 
-                FormEntity formEntity = customizationRoot.Forms.Find(e => e.Name == entityName);
-                if (formEntity == null)
+                CustomizationEntity customizationEntity = customizationRoot.Forms.Find(e => e.Name == entityName);
+                if (customizationEntity == null)
                 {
-                    formEntity = new FormEntity(entityName);
-                    customizationRoot.Forms.Add(formEntity);
+                    customizationEntity = new CustomizationEntity(entityName);
+                    customizationRoot.Forms.Add(customizationEntity);
                 }
 
-                FormType formType = formEntity.FormTypes.Find(t => t.Name == typeName);
-                if (formType == null)
+                CustomizationType customizationType = customizationEntity.CustomzationTypes.Find(t => t.Name == typeName);
+                if (customizationType == null)
                 {
-                    formType = new FormType(typeName);
-                    formEntity.FormTypes.Add(formType);
+                    customizationType = new CustomizationType(typeName);
+                    customizationEntity.CustomzationTypes.Add(customizationType);
                 }
 
-                formType.Forms.Add(form);
+                customizationType.Entities.Add(form);
             }
         }
 
@@ -147,21 +147,21 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 string entityName = view.GetAttributeValue<string>("returnedtypecode");
                 string typeName = view.FormattedValues["querytype"];
 
-                ViewEntity viewEntity = customizationRoot.Views.Find(e => e.Name == entityName);
+                CustomizationEntity viewEntity = customizationRoot.Views.Find(e => e.Name == entityName);
                 if (viewEntity == null)
                 {
-                    viewEntity = new ViewEntity(entityName);
+                    viewEntity = new CustomizationEntity(entityName);
                     customizationRoot.Views.Add(viewEntity);
                 }
 
-                ViewType viewType = viewEntity.ViewTypes.Find(t => t.Name == typeName);
+                CustomizationType viewType = viewEntity.CustomzationTypes.Find(t => t.Name == typeName);
                 if (viewType == null)
                 {
-                    viewType = new ViewType(typeName);
-                    viewEntity.ViewTypes.Add(viewType);
+                    viewType = new CustomizationType(typeName);
+                    viewEntity.CustomzationTypes.Add(viewType);
                 }
 
-                viewType.Views.Add(view);
+                viewType.Entities.Add(view);
             }
         }
 
