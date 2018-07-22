@@ -11,7 +11,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class ViewComparer : ComparerBase
     {
-        private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion" };
+        private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
 
         public ViewComparer()
         { }
@@ -62,10 +62,20 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                                     break;
                                 }
                             case "BooleanManagedProperty":
-                            {
-                                name = ((BooleanManagedProperty)(source ?? target)).ManagedPropertyLogicalName;
-                                break;
-                            }
+                                {
+                                    name = ((BooleanManagedProperty)(source ?? target)).ManagedPropertyLogicalName;
+                                    break;
+                                }
+                            ///ToDo: This is still wrong here
+                            case "KeyValuePair`2":
+                                {
+                                    name = ((KeyValuePair<string, dynamic>)(source ?? target)).Key;
+                                    source = ((KeyValuePair<string, object>?)source)?.Value;
+                                    target = ((KeyValuePair<string, object>?)target)?.Value;
+                                    
+                                    type = GetCommonType(source, target);
+                                    break;
+                                }
                             default:
                                 name = prop.Name;
                                 break;
@@ -75,10 +85,22 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         {
                             ParentProperty = prop
                         };
+
+                        if (ignoreList.Any(s => parent.Name.Contains(s)))
+                        {
+                            return;
+                        }
+
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type) && !ignoreList.Any(s => parent.Name.Contains(s)) && !type.Name.StartsWith("KeyValuePair"))
+                    ///ToDo: There should never be a null Type !!!
+                    if (type == null)
+                    {
+                        return;
+                    }
+
+                    if (IsSimpleType(type) /*&& !ignoreList.Any(s => parent.Name.Contains(s))*/ && !type.Name.StartsWith("KeyValuePair"))
                     {
                         // for simple types just compare values
                         if (!Equals(source, target))
