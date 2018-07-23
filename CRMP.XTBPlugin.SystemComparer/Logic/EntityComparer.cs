@@ -9,11 +9,11 @@ using Microsoft.Xrm.Sdk;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class ViewComparer : ComparerBase
+    public class EntityComparer : ComparerBase
     {
         private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
 
-        public ViewComparer()
+        public EntityComparer()
         { }
 
         public MetadataComparison Compare(string name, List<CustomizationEntity> source, List<CustomizationEntity> target)

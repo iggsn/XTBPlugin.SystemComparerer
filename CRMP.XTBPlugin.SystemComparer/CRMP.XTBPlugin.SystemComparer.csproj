@@ -93,8 +93,7 @@
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
     <Compile Include="Logic\ComparerBase.cs" />
-    <Compile Include="Logic\ViewComparer.cs" />
-    <Compile Include="Logic\FormComparer.cs" />
+    <Compile Include="Logic\EntityComparer.cs" />
     <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />

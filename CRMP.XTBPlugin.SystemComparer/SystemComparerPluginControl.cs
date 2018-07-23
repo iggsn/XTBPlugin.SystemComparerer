@@ -300,25 +300,25 @@ namespace CRMP.XTBPlugin.SystemComparer
 
                     if (_configuration.IncludeViews)
                     {
-                        ViewComparer viewComparer = new ViewComparer();
-                        MetadataComparison viewComparison = null;
-                        viewComparison = viewComparer.Compare("Views", emds._sourceCustomizationRoot.Views,
+                        EntityComparer viewComparer = new EntityComparer();
+                        MetadataComparison viewComparison = viewComparer.Compare("Views", 
+                            emds._sourceCustomizationRoot.Views,
                             emds._targetCustomizationRoot.Views);
                         AddItem(viewComparison, null);
                     }
 
                     if (_configuration.IncludeForms)
                     {
-                        FormComparer formComparer = new FormComparer();
-                        MetadataComparison formComparison;
-                        formComparison = formComparer.Compare("Forms", emds._sourceCustomizationRoot.Forms,
+                        EntityComparer formComparer = new EntityComparer();
+                        MetadataComparison formComparison = formComparer.Compare("Forms", 
+                            emds._sourceCustomizationRoot.Forms,
                             emds._targetCustomizationRoot.Forms);
                         AddItem(formComparison, null);
                     }
 
                     MetadataComparer comparer = new MetadataComparer();
-                    MetadataComparison comparison = null;
-                    comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
+                    MetadataComparison comparison = comparer.Compare("Entities", 
+                        emds._sourceCustomizationRoot.EntitiesRaw,
                         emds._targetCustomizationRoot.EntitiesRaw);
                     AddItem(comparison, null);
                 },
