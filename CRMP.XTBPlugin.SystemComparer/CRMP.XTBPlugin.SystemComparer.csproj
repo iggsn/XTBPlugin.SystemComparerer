@@ -138,22 +138,22 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack">
-      <Version>2.0.15</Version>
+      <Version>2.0.16</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.ApplicationInsights">
-      <Version>2.6.4</Version>
+      <Version>2.8.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies">
-      <Version>9.0.2.4</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Deployment">
-      <Version>9.0.2.4</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Workflow">
-      <Version>9.0.2.4</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly">
-      <Version>9.0.2.4</Version>
+      <Version>9.0.2.7</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel">
       <Version>6.1.7600.16394</Version>
@@ -162,13 +162,13 @@
       <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="MscrmTools.Xrm.Connection">
-      <Version>1.2018.6.17</Version>
+      <Version>1.2018.7.19</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="XrmToolBoxPackage">
-      <Version>1.2018.6.25</Version>
+      <Version>1.2018.7.28</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
