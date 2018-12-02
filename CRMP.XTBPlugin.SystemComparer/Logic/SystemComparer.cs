@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.AppCode;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using McTools.Xrm.Connection;
@@ -31,7 +29,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             _targetConnection = targetConnection;
         }
 
-        public void RetrieveMetadata(ConnectionType connectionType, Action<int, string> reportProgress)
+        public void RetrieveMetadata(ConnectionType connectionType, bool includeAttributes , Action<int, string> reportProgress)
         {
             reportProgress(0, $"Fetching Entity Metadata from {connectionType.ToString()}");
 
@@ -39,46 +37,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
-            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, EntityFilters.Attributes);
+            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, includeAttributes ? EntityFilters.Attributes : EntityFilters.All);
 
             customzationRoot.EntitiesRaw = entitiesMetadata;
-
-            /*reportProgress(0, $"Processing Entity Metadata from {connectionType.ToString()}");
-
-            foreach (EntityMetadata entityMetadata in entitiesMetadata)
-            {
-                CustomizationEntity customizationEntity = new CustomizationEntity(entityMetadata.LogicalName, entityMetadata);
-
-                customzationRoot.Entities.Add(customizationEntity);
-
-                foreach (AttributeMetadata attributeMetadata in entityMetadata.Attributes)
-                {
-                    CustomizationAttribute customizationAttribute = new CustomizationAttribute(attributeMetadata.LogicalName,attributeMetadata);
-
-                    customizationEntity.Attributes.Add(customizationAttribute);
-                }
-            }
-
-            QueryExpression query = new QueryExpression
-            {
-                EntityName = "systemform",
-                ColumnSet = new ColumnSet(true),
-                PageInfo = new PagingInfo
-                {
-                    Count = 5000,
-                    PageNumber = 1,
-                    PagingCookie = null
-                },
-                Orders =
-                {
-                    new OrderExpression("objecttypecode", OrderType.Ascending)
-                }
-            };
-
-            reportProgress(0, $"Retrieving and processing Forms from {connectionType.ToString()}");
-            ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
-
-            crmServiceClient.RetrieveMultiple(query);*/
         }
 
         public void RetrieveOrganization(ConnectionType connectionType, Action<int, string> reportProgress)
@@ -99,11 +60,109 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             };
 
             reportProgress(0, $"Retrieving and processing Organization data from {connectionType.ToString()}");
-            ExecuteQueryWithPaging(query, crmServiceClient, customzationRoot.Forms);
+            customzationRoot.Organizations = ExecuteQueryWithPaging(query, crmServiceClient);
+        }
 
-            EntityCollection response = crmServiceClient.RetrieveMultiple(query);
+        public void RetrieveForms(ConnectionType connectionType, bool execute, Action<int, string> reportProgress)
+        {
+            if (!execute) return;
 
-            customzationRoot.Organizations = response.Entities.ToList();
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
+            CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
+
+            QueryExpression query = new QueryExpression
+            {
+                EntityName = "systemform",
+                ColumnSet = new ColumnSet("formid", "introducedversion", "description", "isairmerged", "iscustomizable", "formpresentation", "formxml", "componentstate", "isdesktopenabled", "formjson", "version", "versionnumber", "canbedeleted", "ismanaged", "formactivationstate", "uniquename", "type", "objecttypecode", "isdefault"),
+                PageInfo = new PagingInfo
+                {
+                    Count = 5000,
+                    PageNumber = 1,
+                    PagingCookie = null
+                },
+                Orders =
+                {
+                    new OrderExpression("objecttypecode", OrderType.Ascending),
+                    new OrderExpression("name", OrderType.Ascending),
+                    //new OrderExpression("type", OrderType.Ascending)
+                }
+            };
+
+            reportProgress(0, $"Retrieving and processing system forms data from {connectionType.ToString()}");
+            List<Entity> formsResult = ExecuteQueryWithPaging(query, crmServiceClient);
+
+            foreach (Entity form in formsResult)
+            {
+                string entityName = form.GetAttributeValue<string>("objecttypecode");
+                string typeName = form.FormattedValues["type"];
+
+                CustomizationEntity customizationEntity = customizationRoot.Forms.Find(e => e.Name == entityName);
+                if (customizationEntity == null)
+                {
+                    customizationEntity = new CustomizationEntity(entityName);
+                    customizationRoot.Forms.Add(customizationEntity);
+                }
+
+                CustomizationType customizationType = customizationEntity.CustomzationTypes.Find(t => t.Name == typeName);
+                if (customizationType == null)
+                {
+                    customizationType = new CustomizationType(typeName);
+                    customizationEntity.CustomzationTypes.Add(customizationType);
+                }
+
+                customizationType.Entities.Add(form);
+            }
+        }
+
+        public void RetrieveViews(ConnectionType connectionType, bool execute, Action<int, string> reportProgress)
+        {
+            if (!execute) return;
+
+            CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
+            CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
+
+            QueryExpression query = new QueryExpression
+            {
+                EntityName = "savedquery",
+                ColumnSet = new ColumnSet("introducedversion", "description", "iscustomizable", "componentstate", "versionnumber", "canbedeleted", "ismanaged", "solutionid", "isdefault", "isuserdefined", "savedqueryid", "statecode", "conditionalformatting", "name", "querytype", "isquickfindquery", "columnsetxml", "offlinesqlquery", "queryappusage", "advancedgroupby", "fetchxml", "returnedtypecode", "isprivate", "iscustom", "layoutjson", "statuscode", "queryapi", "organizationtaborder", "layoutxml"),
+                PageInfo = new PagingInfo
+                {
+                    Count = 5000,
+                    PageNumber = 1,
+                    PagingCookie = null
+                },
+                Orders =
+                {
+                    new OrderExpression("returnedtypecode", OrderType.Ascending),
+                    new OrderExpression("name", OrderType.Ascending),
+                    //new OrderExpression("type", OrderType.Ascending)
+                }
+            };
+
+            reportProgress(0, $"Retrieving and processing system view data from {connectionType.ToString()}");
+            List<Entity> viewsResult = ExecuteQueryWithPaging(query, crmServiceClient);
+
+            foreach (Entity view in viewsResult)
+            {
+                string entityName = view.GetAttributeValue<string>("returnedtypecode");
+                string typeName = view.FormattedValues["querytype"];
+
+                CustomizationEntity viewEntity = customizationRoot.Views.Find(e => e.Name == entityName);
+                if (viewEntity == null)
+                {
+                    viewEntity = new CustomizationEntity(entityName);
+                    customizationRoot.Views.Add(viewEntity);
+                }
+
+                CustomizationType viewType = viewEntity.CustomzationTypes.Find(t => t.Name == typeName);
+                if (viewType == null)
+                {
+                    viewType = new CustomizationType(typeName);
+                    viewEntity.CustomzationTypes.Add(viewType);
+                }
+
+                viewType.Entities.Add(view);
+            }
         }
 
         private CrmServiceClient GetCrmServiceClient(ConnectionType connectionType, bool forceNew = false)
@@ -132,9 +191,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             }
         }
 
-        private void ExecuteQueryWithPaging<TCustomization>(QueryExpression query, CrmServiceClient crmServiceClient, List<TCustomization> children)
-            where TCustomization : new()
+        private List<Entity> ExecuteQueryWithPaging(QueryExpression query, CrmServiceClient crmServiceClient)
         {
+            List<Entity> results = new List<Entity>();
             while (true)
             {
                 RetrieveMultipleRequest request = new RetrieveMultipleRequest()
@@ -147,11 +206,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
                 foreach (Entity entity in response.EntityCollection.Entities)
                 {
-                    Type classType = typeof(TCustomization);
-                    ConstructorInfo classConstructor = classType.GetConstructor(new [] { typeof(string), typeof(Entity) });
-                    TCustomization classInstance = (TCustomization)classConstructor.Invoke(new object[] { entity.LogicalName, entity });
-
-                    children.Add(classInstance);
+                    results.Add(entity);
                 }
 
                 if (response.EntityCollection.MoreRecords)
@@ -164,6 +219,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     break;
                 }
             }
+
+            return results;
         }
     }
 }

@@ -4,30 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
-using Microsoft.Xrm.Sdk.Metadata;
+using CRMP.XTBPlugin.SystemComparer.Metadata;
+using Microsoft.Xrm.Sdk;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class MetadataComparer : ComparerBase
+    public class EntityComparer : ComparerBase
     {
-        private readonly List<string> _ignoreList = new List<string> { "MetadataId", "ColumnNumber" };
+        private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
 
-        public EventHandler<EventArgs> LogHandler;
+        public EntityComparer()
+        { }
 
-        public MetadataComparer()
-        {  }
-
-        public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
+        public MetadataComparison Compare(string name, List<CustomizationEntity> source, List<CustomizationEntity> target)
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
 
             return entities;
-        }
-
-        private void OnLogMessageRaised(EventArgs e)
-        {
-            LogHandler?.Invoke(this, e);
         }
 
         private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
@@ -49,39 +43,38 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     MetadataComparison originalParent = parent;
 
                     // Determine if a new CustomizationComparison node should be created
-                    if (type != typeof(List<EntityMetadata>)) //&& ComparisonTypeMap.IsTypeComparisonType(type))
+                    if (type != typeof(List<CustomizationEntity>) && type != typeof(List<CustomizationType>) && type != typeof(List<Entity>))
                     {
                         string name;
 
-
-                       switch (type.Name)
+                        switch (type.Name)
                         {
-                            case "EntityMetadata":
-                            {
-                                name = ((EntityMetadata)(source ?? target)).LogicalName;
-                                break;
-                            }
-                            case "AttributeMetadata":
-                            case "StringAttributeMetadata":
-                            case "MemoAttributeMetadata":
-                            case "DoubleAttributeMetadata":
-                            case "IntegrationAttributeMetadata":
-                            case "MoneyAttributeMetadata":
-                            case "DateTimeAttributeMetadata":
-                            case "LookupAttributeMetadata":
-                            case "DecimalAttributeMetadata":
-                            case "PicklistAttributeMetadata":
-                            case "IntegerAttributeMetadata":
-                            case "BooleanAttributeMetadata":
-                            case "ImageAttributeMetadata":
-                            case "BigIntAttributeMetadata":
-                            case "EntityNameAttributeMetadata":
-                            case "StateAttributeMetadata":
-                            case "MultiSelectPicklistAttributeMetadata":
-                            case "StatusAttributeMetadata":
+                            case "CustomizationEntity":
+                            case "CustomizationType":
                                 {
-                                name = ((AttributeMetadata)(source ?? target)).LogicalName;
-                                break;
+                                    //name = ((KeyValuePair<string, Dictionary<string, List<Entity>>>)(source ?? target)).Key;
+                                    name = ((dynamic)(source ?? target)).Name;
+                                    break;
+                                }
+                            case "Entity":
+                                {
+                                    name = ((Entity)(source ?? target)).LogicalName;
+                                    break;
+                                }
+                            case "BooleanManagedProperty":
+                                {
+                                    name = ((BooleanManagedProperty)(source ?? target)).ManagedPropertyLogicalName;
+                                    break;
+                                }
+                            ///ToDo: This is still wrong here
+                            case "KeyValuePair`2":
+                                {
+                                    name = ((KeyValuePair<string, dynamic>)(source ?? target)).Key;
+                                    source = ((KeyValuePair<string, object>?)source)?.Value;
+                                    target = ((KeyValuePair<string, object>?)target)?.Value;
+                                    
+                                    type = GetCommonType(source, target);
+                                    break;
                                 }
                             default:
                                 name = prop.Name;
@@ -92,17 +85,29 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         {
                             ParentProperty = prop
                         };
+
+                        if (ignoreList.Any(s => parent.Name.Contains(s)))
+                        {
+                            return;
+                        }
+
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type) && !_ignoreList.Any(s => parent.Name.Contains(s)))
+                    ///ToDo: There should never be a null Type !!!
+                    if (type == null)
+                    {
+                        return;
+                    }
+
+                    if (IsSimpleType(type) /*&& !ignoreList.Any(s => parent.Name.Contains(s))*/ && !type.Name.StartsWith("KeyValuePair"))
                     {
                         // for simple types just compare values
-                         if (!Equals(source, target))
-                         {
-                             originalParent.IsDifferent = true;
-                             parent.IsDifferent = true;
-                         }
+                        if (!Equals(source, target))
+                        {
+                            originalParent.IsDifferent = true;
+                            parent.IsDifferent = true;
+                        }
                     }
                     else if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
@@ -116,6 +121,11 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         {
                             if (p.CanRead)
                             {
+                                if (p.GetIndexParameters().Length > 0)
+                                {
+                                    continue;
+                                }
+
                                 object sourceValue = source != null ? p.GetValue(source, null) : null;
                                 object targetValue = target != null ? p.GetValue(target, null) : null;
 

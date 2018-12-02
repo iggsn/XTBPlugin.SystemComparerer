@@ -23,13 +23,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseWithPublish|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\ReleaseWithPublish\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -67,20 +76,33 @@
     <Compile Include="AppCode\EventName.cs" />
     <Compile Include="AppCode\Telemetry.cs" />
     <Compile Include="AppCode\TelemetryEventType.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\MetadataComparison.cs" />
     <Compile Include="AppCode\ConnectionType.cs" />
     <Compile Include="AppCode\LockRedraw.cs" />
+    <Compile Include="Forms\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Options.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logic\ComparerBase.cs" />
+    <Compile Include="Logic\EntityComparer.cs" />
     <Compile Include="Logic\OrganizationComparer.cs" />
     <Compile Include="Logic\MetadataComparer.cs" />
     <Compile Include="Logic\SystemComparer.cs" />
-    <Compile Include="Metadata\CustomizationForms.cs" />
     <Compile Include="Metadata\CustomizationRoot.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SystemComparerPlugin.cs" />
     <Compile Include="SystemComparerPluginControl.cs">
       <SubType>UserControl</SubType>
@@ -100,31 +122,38 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SystemComparerPluginControl.resx">
       <DependentUpon>SystemComparerPluginControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ILMerge.Tools">
-      <Version>2.14.1208</Version>
+    <PackageReference Include="ILRepack">
+      <Version>2.0.16</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.ApplicationInsights">
-      <Version>2.6.1</Version>
+      <Version>2.8.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Deployment">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Workflow">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly">
-      <Version>9.0.2.3</Version>
+      <Version>9.0.2.7</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel">
       <Version>6.1.7600.16394</Version>
@@ -133,20 +162,28 @@
       <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="MscrmTools.Xrm.Connection">
-      <Version>1.2018.4.16</Version>
+      <Version>1.2018.7.19</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
-      <Version>4.6.2</Version>
-    </PackageReference>
-    <PackageReference Include="NuGet.Core">
-      <Version>2.14.0</Version>
+      <Version>4.7.1</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="XrmToolBoxPackage">
-      <Version>1.2018.4.22</Version>
+      <Version>1.2018.7.28</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-fenster-schließen-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-aus-der-cloud-laden-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-support-24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -156,8 +193,20 @@
   move /Y CRMP.XTBPlugin.*.pdb Plugins
 )</PostBuildEvent>
   </PropertyGroup>
-  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <MakeDir Directories="$(OutputPath)Merged" />
     <ItemGroup>
+      <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
+    </ItemGroup>
+    <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
+    <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
+  </Target>
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'ReleaseWithPublish'">
+    <!--<ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
       <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
       <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
@@ -167,7 +216,17 @@
     </PropertyGroup>
     <MakeDir Directories="$(OutputPath)Merged" />
     <Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
-    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />-->
+    <MakeDir Directories="$(OutputPath)Merged" />
+    <ItemGroup>
+      <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
+    </ItemGroup>
+    <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
+    <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>

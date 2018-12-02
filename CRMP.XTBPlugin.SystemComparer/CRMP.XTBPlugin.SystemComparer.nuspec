@@ -18,11 +18,15 @@
       1.2018.5.25: aligned file version number and downgraded NewtonSoft.Json to fit XrmToolBox
                    added optional telemetry
                    fixed false positives with MetadataId
+      1.2018.12.2: Updated to latest XrmToolBox version
+                   UI changes (icons)
+                   Added views and forms (beta)
+                   fixed issue in comparison of OptionSets (now using Value)
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>XrmToolBox Plugins SystemComparer</tags>
     <dependencies>
-      <dependency id="XrmToolBox" version="1.2018.4.16" />
+      <dependency id="XrmToolBox" version="1.2018.6.25" />
     </dependencies>
   </metadata>
   <files>

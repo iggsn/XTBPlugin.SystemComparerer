@@ -14,7 +14,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin
+    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin, IAboutPlugin
     {
         const int StateImageIndexDashPlus = 0;
         const int StateImageIndexDashMinus = 1;
@@ -30,6 +30,8 @@ namespace CRMP.XTBPlugin.SystemComparer
         internal Settings Settings;
 
         private Telemetry _telemetry;
+
+        private Configuration _configuration;
 
         public new event EventHandler OnRequestConnection;
 
@@ -78,8 +80,18 @@ namespace CRMP.XTBPlugin.SystemComparer
             _telemetry.LogEvent(EventName.PluginStart);
             _telemetry.LogEvent(loadedSettings ? EventName.SettingsLoaded : EventName.SettingsCreated);
 
+            _configuration = new Configuration();
+
+            InitConfiguration(_configuration);
             InitBrowser(webBrowserSource);
             InitBrowser(webBrowserTarget);
+        }
+
+        private void InitConfiguration(Configuration configuration)
+        {
+            checkboxWithAttributes.Checked = configuration.IncludeAttributeMetadata;
+            checkboxForms.Checked = configuration.IncludeForms;
+            checkboxViews.Checked = configuration.IncludeViews;
         }
 
         private void InitBrowser(WebBrowser webBrowser)
@@ -101,24 +113,24 @@ namespace CRMP.XTBPlugin.SystemComparer
             doc.Write("<body>");
             doc.Write("</body>");
             doc.Write("</html>");
-            //doc.Window.Scroll += new HtmlElementEventHandler(Window_Scroll);
+            doc.Window.Scroll += new HtmlElementEventHandler(Window_Scroll);
         }
 
-        /* void Window_Scroll(object sender, HtmlElementEventArgs e)
-         {
-             HtmlWindow window = (HtmlWindow)sender;
+        void Window_Scroll(object sender, HtmlElementEventArgs e)
+        {
+            HtmlWindow window = (HtmlWindow)sender;
 
-             if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
-             {
-                 TargetWebBrowser.Document.Body.ScrollTop = SourceWebBrowser.Document.Body.ScrollTop;
-                 TargetWebBrowser.Document.Body.ScrollLeft = SourceWebBrowser.Document.Body.ScrollLeft;
-             }
-             else
-             {
-                 SourceWebBrowser.Document.Body.ScrollTop = TargetWebBrowser.Document.Body.ScrollTop;
-                 SourceWebBrowser.Document.Body.ScrollLeft = TargetWebBrowser.Document.Body.ScrollLeft;
-             }
-         }*/
+            if (window.DomWindow == webBrowserSource.Document.Window.DomWindow)
+            {
+                webBrowserTarget.Document.Body.ScrollTop = webBrowserSource.Document.Body.ScrollTop;
+                webBrowserTarget.Document.Body.ScrollLeft = webBrowserSource.Document.Body.ScrollLeft;
+            }
+            else
+            {
+                webBrowserSource.Document.Body.ScrollTop = webBrowserTarget.Document.Body.ScrollTop;
+                webBrowserSource.Document.Body.ScrollLeft = webBrowserTarget.Document.Body.ScrollLeft;
+            }
+        }
 
         #region ToolbarClicks
         /// <summary>
@@ -141,8 +153,7 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void tbbLoadMetadata_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Load Entities button.");
-            LoadEntites();
-            //ExecuteMethod(LoadEntites(_sourceConnection.ServiceClient));
+            LoadEntities();
         }
 
         /// <summary>
@@ -245,7 +256,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             base.OnConnectionUpdated(e);
         }
 
-        private void LoadEntites()
+        private void LoadEntities()
         {
             _systemComparer = new Logic.SystemComparer(_sourceConnection, _targetConnection);
 
@@ -254,12 +265,16 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Message = "Getting Metadata",
                 Work = (worker, args) =>
                 {
-                    LogInfo("Start retieving metadata on Source");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source, worker.ReportProgress);
+                    LogInfo("Start retrieving metadata on Source");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
-                    LogInfo("Start retieving metadata on Target");
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
+                    LogInfo("Start retrieving metadata on Target");
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
+                    _systemComparer.RetrieveViews(ConnectionType.Target, _configuration.IncludeViews, worker.ReportProgress);
 
                     args.Result = _systemComparer;
                 },
@@ -274,22 +289,38 @@ namespace CRMP.XTBPlugin.SystemComparer
 
                     var emds = (Logic.SystemComparer)args.Result;
 
-                    MetadataComparer comparer = new MetadataComparer();
-                    //comparer.LogHandler += LogHandler;
-
-                    MetadataComparison comparison = null;
-                    comparison = comparer.Compare("Entities", emds._sourceCustomizationRoot.EntitiesRaw,
-                        emds._targetCustomizationRoot.EntitiesRaw);
+                    comparisonListView.Items.Clear();
 
                     /*OrganizationComparer orgComparer = new OrganizationComparer();
                     MetadataComparison orgComparison = null;
                     orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
                         emds._targetCustomizationRoot.Organizations);*/
 
-                    comparisonListView.Items.Clear();
 
+
+                    if (_configuration.IncludeViews)
+                    {
+                        EntityComparer viewComparer = new EntityComparer();
+                        MetadataComparison viewComparison = viewComparer.Compare("Views", 
+                            emds._sourceCustomizationRoot.Views,
+                            emds._targetCustomizationRoot.Views);
+                        AddItem(viewComparison, null);
+                    }
+
+                    if (_configuration.IncludeForms)
+                    {
+                        EntityComparer formComparer = new EntityComparer();
+                        MetadataComparison formComparison = formComparer.Compare("Forms", 
+                            emds._sourceCustomizationRoot.Forms,
+                            emds._targetCustomizationRoot.Forms);
+                        AddItem(formComparison, null);
+                    }
+
+                    MetadataComparer comparer = new MetadataComparer();
+                    MetadataComparison comparison = comparer.Compare("Entities", 
+                        emds._sourceCustomizationRoot.EntitiesRaw,
+                        emds._targetCustomizationRoot.EntitiesRaw);
                     AddItem(comparison, null);
-                    //AddItem(orgComparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
@@ -442,5 +473,35 @@ namespace CRMP.XTBPlugin.SystemComparer
         {
             LogInfo("From Delegate");
         }
+
+        #region IAboutDialog
+        public void ShowAboutDialog()
+        {
+            About about = new About();
+            about.StartPosition = FormStartPosition.CenterParent;
+            about.ShowDialog();
+        }
+        #endregion
+
+        #region ConfigurationClicks
+        private void checkboxAnyConfiguration_Click(object sender, EventArgs e)
+        {
+            if (sender is CheckBox configBox)
+            {
+                switch (configBox.Name)
+                {
+                    case "checkboxWithAttributes":
+                        _configuration.IncludeAttributeMetadata = checkboxWithAttributes.Checked;
+                        break;
+                    case "checkboxForms":
+                        _configuration.IncludeForms = checkboxForms.Checked;
+                        break;
+                    case "checkboxViews":
+                        _configuration.IncludeViews = checkboxViews.Checked;
+                        break;
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -34,6 +34,8 @@
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tbbLoadMetadata = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tbbOptions = new System.Windows.Forms.ToolStripButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.labelTargetName = new System.Windows.Forms.Label();
             this.labelSourceName = new System.Windows.Forms.Label();
@@ -50,16 +52,17 @@
             this.notInTargetColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DifferenceList = new System.Windows.Forms.ImageList(this.components);
             this.TreeImagesList = new System.Windows.Forms.ImageList(this.components);
-            this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.splitContainerOverview = new System.Windows.Forms.SplitContainer();
             this.splitContainerCompare = new System.Windows.Forms.SplitContainer();
             this.webBrowserSource = new System.Windows.Forms.WebBrowser();
             this.webBrowserTarget = new System.Windows.Forms.WebBrowser();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbbOptions = new System.Windows.Forms.ToolStripButton();
+            this.systemComparerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkboxViews = new System.Windows.Forms.CheckBox();
+            this.checkboxForms = new System.Windows.Forms.CheckBox();
+            this.checkboxWithAttributes = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).BeginInit();
             this.splitContainerOverview.Panel1.SuspendLayout();
             this.splitContainerOverview.Panel2.SuspendLayout();
@@ -68,6 +71,8 @@
             this.splitContainerCompare.Panel1.SuspendLayout();
             this.splitContainerCompare.Panel2.SuspendLayout();
             this.splitContainerCompare.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -81,31 +86,47 @@
             this.tbbOptions});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(907, 25);
+            this.toolStripMenu.Size = new System.Drawing.Size(907, 31);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
             // tsbClose
             // 
-            this.tsbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbClose.Image = global::CRMP.XTBPlugin.SystemComparer.Properties.Resources.icons8_fenster_schließen_24;
             this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(86, 22);
+            this.tsbClose.Size = new System.Drawing.Size(28, 28);
             this.tsbClose.Text = "Close this tool";
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
             // tssSeparator1
             // 
             this.tssSeparator1.Name = "tssSeparator1";
-            this.tssSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.tssSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // tbbLoadMetadata
             // 
-            this.tbbLoadMetadata.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.tbbLoadMetadata.Enabled = false;
+            this.tbbLoadMetadata.Image = global::CRMP.XTBPlugin.SystemComparer.Properties.Resources.icons8_aus_der_cloud_laden_24;
             this.tbbLoadMetadata.Name = "tbbLoadMetadata";
-            this.tbbLoadMetadata.Size = new System.Drawing.Size(90, 22);
+            this.tbbLoadMetadata.Size = new System.Drawing.Size(114, 28);
             this.tbbLoadMetadata.Text = "Load Metadata";
             this.tbbLoadMetadata.Click += new System.EventHandler(this.tbbLoadMetadata_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // tbbOptions
+            // 
+            this.tbbOptions.Image = global::CRMP.XTBPlugin.SystemComparer.Properties.Resources.icons8_support_24;
+            this.tbbOptions.ImageTransparentColor = System.Drawing.Color.Transparent;
+            this.tbbOptions.Name = "tbbOptions";
+            this.tbbOptions.Size = new System.Drawing.Size(77, 28);
+            this.tbbOptions.Text = "Options";
+            this.tbbOptions.ToolTipText = "Shows Options Menu";
+            this.tbbOptions.Click += new System.EventHandler(this.tbbOptions_Click);
             // 
             // groupBox1
             // 
@@ -115,9 +136,9 @@
             this.groupBox1.Controls.Add(this.buttonChangeSource);
             this.groupBox1.Controls.Add(this.labelTarget);
             this.groupBox1.Controls.Add(this.labelSource);
-            this.groupBox1.Location = new System.Drawing.Point(3, 28);
+            this.groupBox1.Location = new System.Drawing.Point(3, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(491, 100);
+            this.groupBox1.Size = new System.Drawing.Size(491, 94);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection";
@@ -125,7 +146,7 @@
             // labelTargetName
             // 
             this.labelTargetName.AutoSize = true;
-            this.labelTargetName.Location = new System.Drawing.Point(134, 49);
+            this.labelTargetName.Location = new System.Drawing.Point(134, 54);
             this.labelTargetName.Name = "labelTargetName";
             this.labelTargetName.Size = new System.Drawing.Size(76, 13);
             this.labelTargetName.TabIndex = 7;
@@ -134,7 +155,7 @@
             // labelSourceName
             // 
             this.labelSourceName.AutoSize = true;
-            this.labelSourceName.Location = new System.Drawing.Point(134, 20);
+            this.labelSourceName.Location = new System.Drawing.Point(134, 25);
             this.labelSourceName.Name = "labelSourceName";
             this.labelSourceName.Size = new System.Drawing.Size(76, 13);
             this.labelSourceName.TabIndex = 6;
@@ -142,7 +163,7 @@
             // 
             // buttonChangeTarget
             // 
-            this.buttonChangeTarget.Location = new System.Drawing.Point(363, 44);
+            this.buttonChangeTarget.Location = new System.Drawing.Point(363, 49);
             this.buttonChangeTarget.Name = "buttonChangeTarget";
             this.buttonChangeTarget.Size = new System.Drawing.Size(122, 23);
             this.buttonChangeTarget.TabIndex = 5;
@@ -152,7 +173,7 @@
             // 
             // buttonChangeSource
             // 
-            this.buttonChangeSource.Location = new System.Drawing.Point(363, 15);
+            this.buttonChangeSource.Location = new System.Drawing.Point(363, 20);
             this.buttonChangeSource.Name = "buttonChangeSource";
             this.buttonChangeSource.Size = new System.Drawing.Size(122, 23);
             this.buttonChangeSource.TabIndex = 4;
@@ -163,7 +184,7 @@
             // labelTarget
             // 
             this.labelTarget.AutoSize = true;
-            this.labelTarget.Location = new System.Drawing.Point(6, 49);
+            this.labelTarget.Location = new System.Drawing.Point(6, 54);
             this.labelTarget.Name = "labelTarget";
             this.labelTarget.Size = new System.Drawing.Size(103, 13);
             this.labelTarget.TabIndex = 1;
@@ -172,7 +193,7 @@
             // labelSource
             // 
             this.labelSource.AutoSize = true;
-            this.labelSource.Location = new System.Drawing.Point(7, 20);
+            this.labelSource.Location = new System.Drawing.Point(7, 25);
             this.labelSource.Name = "labelSource";
             this.labelSource.Size = new System.Drawing.Size(106, 13);
             this.labelSource.TabIndex = 0;
@@ -255,10 +276,6 @@
             this.TreeImagesList.Images.SetKeyName(0, "maximize.png");
             this.TreeImagesList.Images.SetKeyName(1, "minimize.png");
             // 
-            // systemComparerBindingSource
-            // 
-            this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
-            // 
             // splitContainerOverview
             // 
             this.splitContainerOverview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -314,26 +331,59 @@
             this.webBrowserTarget.Size = new System.Drawing.Size(443, 182);
             this.webBrowserTarget.TabIndex = 0;
             // 
-            // toolStripSeparator1
+            // systemComparerBindingSource
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.systemComparerBindingSource.DataSource = typeof(CRMP.XTBPlugin.SystemComparer.Logic.SystemComparer);
             // 
-            // tbbOptions
+            // groupBox2
             // 
-            this.tbbOptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tbbOptions.Image = ((System.Drawing.Image)(resources.GetObject("tbbOptions.Image")));
-            this.tbbOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tbbOptions.Name = "tbbOptions";
-            this.tbbOptions.Size = new System.Drawing.Size(53, 22);
-            this.tbbOptions.Text = "Options";
-            this.tbbOptions.ToolTipText = "Shows Options Menu";
-            this.tbbOptions.Click += new System.EventHandler(this.tbbOptions_Click);
+            this.groupBox2.Controls.Add(this.checkboxViews);
+            this.groupBox2.Controls.Add(this.checkboxForms);
+            this.groupBox2.Controls.Add(this.checkboxWithAttributes);
+            this.groupBox2.Location = new System.Drawing.Point(501, 34);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(403, 94);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Settings";
+            // 
+            // checkboxViews
+            // 
+            this.checkboxViews.AutoSize = true;
+            this.checkboxViews.Location = new System.Drawing.Point(6, 65);
+            this.checkboxViews.Name = "checkboxViews";
+            this.checkboxViews.Size = new System.Drawing.Size(122, 17);
+            this.checkboxViews.TabIndex = 2;
+            this.checkboxViews.Text = "Include Views (beta)";
+            this.checkboxViews.UseVisualStyleBackColor = true;
+            this.checkboxViews.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
+            // checkboxForms
+            // 
+            this.checkboxForms.AutoSize = true;
+            this.checkboxForms.Location = new System.Drawing.Point(6, 42);
+            this.checkboxForms.Name = "checkboxForms";
+            this.checkboxForms.Size = new System.Drawing.Size(122, 17);
+            this.checkboxForms.TabIndex = 1;
+            this.checkboxForms.Text = "Include Forms (beta)";
+            this.checkboxForms.UseVisualStyleBackColor = true;
+            this.checkboxForms.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
+            // checkboxWithAttributes
+            // 
+            this.checkboxWithAttributes.Location = new System.Drawing.Point(6, 19);
+            this.checkboxWithAttributes.Name = "checkboxWithAttributes";
+            this.checkboxWithAttributes.Size = new System.Drawing.Size(151, 17);
+            this.checkboxWithAttributes.TabIndex = 0;
+            this.checkboxWithAttributes.Text = "Include Attribute Metadata";
+            this.checkboxWithAttributes.UseVisualStyleBackColor = true;
+            this.checkboxWithAttributes.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
             // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.splitContainerOverview);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
@@ -344,7 +394,6 @@
             this.toolStripMenu.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
             this.splitContainerOverview.Panel1.ResumeLayout(false);
             this.splitContainerOverview.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).EndInit();
@@ -353,6 +402,9 @@
             this.splitContainerCompare.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCompare)).EndInit();
             this.splitContainerCompare.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -386,5 +438,9 @@
         private System.Windows.Forms.WebBrowser webBrowserTarget;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tbbOptions;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkboxViews;
+        private System.Windows.Forms.CheckBox checkboxForms;
+        private System.Windows.Forms.CheckBox checkboxWithAttributes;
     }
 }
