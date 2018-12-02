@@ -167,6 +167,11 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
+    <PackageReference Include="NuGet.CommandLine">
+      <Version>4.7.1</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="XrmToolBoxPackage">
       <Version>1.2018.7.28</Version>
     </PackageReference>
@@ -195,13 +200,13 @@
       <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
     <ItemGroup>
-      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\*\tools\ilrepack.exe" />
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
     </ItemGroup>
     <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
     <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
   </Target>
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'ReleaseWithPublish'">
-    <ItemGroup>
+    <!--<ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\CRMP.XTBPlugin.SystemComparer.dll" />
       <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
       <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
@@ -211,7 +216,17 @@
     </PropertyGroup>
     <MakeDir Directories="$(OutputPath)Merged" />
     <Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
-    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+    <Exec Command="ilmerge /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />-->
+    <MakeDir Directories="$(OutputPath)Merged" />
+    <ItemGroup>
+      <MergeAssemblies Include="$(OutputPath)\Microsoft.ApplicationInsights.dll" />
+      <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
+    </ItemGroup>
+    <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
+    <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>

@@ -352,9 +352,9 @@
             this.checkboxViews.AutoSize = true;
             this.checkboxViews.Location = new System.Drawing.Point(6, 65);
             this.checkboxViews.Name = "checkboxViews";
-            this.checkboxViews.Size = new System.Drawing.Size(92, 17);
+            this.checkboxViews.Size = new System.Drawing.Size(122, 17);
             this.checkboxViews.TabIndex = 2;
-            this.checkboxViews.Text = "Include Views";
+            this.checkboxViews.Text = "Include Views (beta)";
             this.checkboxViews.UseVisualStyleBackColor = true;
             this.checkboxViews.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
             // 
@@ -363,9 +363,9 @@
             this.checkboxForms.AutoSize = true;
             this.checkboxForms.Location = new System.Drawing.Point(6, 42);
             this.checkboxForms.Name = "checkboxForms";
-            this.checkboxForms.Size = new System.Drawing.Size(92, 17);
+            this.checkboxForms.Size = new System.Drawing.Size(122, 17);
             this.checkboxForms.TabIndex = 1;
-            this.checkboxForms.Text = "Include Forms";
+            this.checkboxForms.Text = "Include Forms (beta)";
             this.checkboxForms.UseVisualStyleBackColor = true;
             this.checkboxForms.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
             // 

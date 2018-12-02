@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Activities.Statements;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Metadata;
 
@@ -38,20 +40,23 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
             Type elementType = enumerable.GetType().GetGenericArguments().Any() ? enumerable.GetType().GetGenericArguments()[0] : null;
 
-            if (elementType != null)
-            {
+            string typeName = elementType != null ? elementType.Name : enumerable.GetType().Name;
 
-                switch (elementType.Name)
-                {
-                    case "EntityMetadata":
-                        {
-                            return enumerable.Cast<EntityMetadata>().ToArray();
-                        }
-                    case "AttributeMetadata":
-                        {
-                            return enumerable.Cast<AttributeMetadata>().ToArray();
-                        }
-                }
+
+            switch (typeName)
+            {
+                case "EntityMetadata":
+                    {
+                        return enumerable.Cast<EntityMetadata>().ToArray();
+                    }
+                case "AttributeMetadata":
+                    {
+                        return enumerable.Cast<AttributeMetadata>().ToArray();
+                    }
+                case "OptionMetadataCollection":
+                    {
+                        return enumerable.Cast<OptionMetadata>().ToArray();
+                    }
             }
 
             return enumerable.Cast<object>().ToArray();
@@ -70,9 +75,16 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 SyncEntityMetadata(ref source, ref target);
                 return;
             }
+
             if (typeof(AttributeMetadata).IsAssignableFrom(elementType))
             {
                 SyncAttributeMetadata(ref source, ref target);
+                return;
+            }
+
+            if (typeof(OptionMetadata).IsAssignableFrom(elementType))
+            {
+                SyncOptionMetadata(ref source, ref target);
                 return;
             }
         }
@@ -111,6 +123,23 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             target = SortAndPad2(combinedIdentities, targetIdentities);
         }
 
+        private static void SyncOptionMetadata(ref Array source, ref Array target)
+        {
+            OptionMetadata[] sourceIdentities = source?.Cast<OptionMetadata>().ToArray() ?? new OptionMetadata[0];
+
+            OptionMetadata[] targetIdentities = target?.Cast<OptionMetadata>().ToArray() ?? new OptionMetadata[0];
+
+            // create a list of combined entities to determine the order by 
+            // which both lists will be sorted
+            int?[] combinedIdentities = sourceIdentities.Select(i => i.Value)
+                .Union(targetIdentities.Select(i => i.Value))
+                .OrderBy(s => s)
+                .ToArray();
+
+            source = SortAndPad3(combinedIdentities, sourceIdentities);
+            target = SortAndPad3(combinedIdentities, targetIdentities);
+        }
+
         /// <summary>
         /// Sorts an array based on a set of keys and fills in missing key values with null.
         /// </summary>
@@ -132,6 +161,15 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
             return identityKeys
                 .Select(k => array.FirstOrDefault(i => i.LogicalName == k))
+                .ToArray();
+        }
+
+        private static Array SortAndPad3(int?[] identityKeys, OptionMetadata[] array)
+        {
+            if (array == null) return null;
+
+            return identityKeys
+                .Select(k => array.FirstOrDefault(i => i.Value == k))
                 .ToArray();
         }
     }

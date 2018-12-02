@@ -11,8 +11,8 @@
         public Configuration()
         {
             IncludeAttributeMetadata = true;
-            IncludeForms = true;
-            IncludeViews = true;
+            IncludeForms = false;
+            IncludeViews = false;
         }
     }
 }
