@@ -190,6 +190,11 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void buttonChangeTarget_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Target Change button.");
+            if (AdditionalConnectionDetails.Any())
+            {
+                RemoveAdditionalOrganization(TargetConnection);
+            }
+
             AddAdditionalOrganization();
         }
 
