@@ -14,16 +14,16 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
     class SystemComparer
     {
         //private Entities _entitiesModel;
-        internal CustomizationRoot _sourceCustomizationRoot;
-        internal CustomizationRoot _targetCustomizationRoot;
+        internal readonly CustomizationRoot SourceCustomizationRoot;
+        internal readonly CustomizationRoot TargetCustomizationRoot;
 
         private readonly ConnectionDetail _sourceConnection;
         private readonly ConnectionDetail _targetConnection;
 
         public SystemComparer(ConnectionDetail sourceConnection, ConnectionDetail targetConnection)
         {
-            _sourceCustomizationRoot = new CustomizationRoot();
-            _targetCustomizationRoot = new CustomizationRoot();
+            SourceCustomizationRoot = new CustomizationRoot();
+            TargetCustomizationRoot = new CustomizationRoot();
 
             _sourceConnection = sourceConnection;
             _targetConnection = targetConnection;
@@ -34,12 +34,12 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             reportProgress(0, $"Fetching Entity Metadata from {connectionType.ToString()}");
 
             CrmServiceClient crmServiceClient = GetCrmServiceClient(connectionType);
-            CustomizationRoot customzationRoot = GetCustomizationRoot(connectionType);
+            CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
             List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, includeAttributes ? EntityFilters.Attributes : EntityFilters.All);
 
-            customzationRoot.EntitiesRaw = entitiesMetadata;
+            customizationRoot.EntitiesRaw = entitiesMetadata;
         }
 
         public void RetrieveOrganization(ConnectionType connectionType, Action<int, string> reportProgress)
@@ -183,9 +183,9 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             switch (connectionType)
             {
                 case ConnectionType.Source:
-                    return _sourceCustomizationRoot;
+                    return SourceCustomizationRoot;
                 case ConnectionType.Target:
-                    return _targetCustomizationRoot;
+                    return TargetCustomizationRoot;
                 default:
                     throw new Exception("Something went wrong");
             }

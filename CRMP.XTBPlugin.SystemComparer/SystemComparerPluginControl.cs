@@ -295,8 +295,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                     {
                         EntityComparer viewComparer = new EntityComparer();
                         MetadataComparison viewComparison = viewComparer.Compare("Views",
-                            emds._sourceCustomizationRoot.Views,
-                            emds._targetCustomizationRoot.Views);
+                            emds.SourceCustomizationRoot.Views,
+                            emds.TargetCustomizationRoot.Views);
                         AddItem(viewComparison, null);
                     }
 
@@ -304,15 +304,15 @@ namespace CRMP.XTBPlugin.SystemComparer
                     {
                         EntityComparer formComparer = new EntityComparer();
                         MetadataComparison formComparison = formComparer.Compare("Forms",
-                            emds._sourceCustomizationRoot.Forms,
-                            emds._targetCustomizationRoot.Forms);
+                            emds.SourceCustomizationRoot.Forms,
+                            emds.TargetCustomizationRoot.Forms);
                         AddItem(formComparison, null);
                     }
 
                     MetadataComparer comparer = new MetadataComparer();
                     MetadataComparison comparison = comparer.Compare("Entities",
-                        emds._sourceCustomizationRoot.EntitiesRaw,
-                        emds._targetCustomizationRoot.EntitiesRaw);
+                        emds.SourceCustomizationRoot.EntitiesRaw,
+                        emds.TargetCustomizationRoot.EntitiesRaw);
                     AddItem(comparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
