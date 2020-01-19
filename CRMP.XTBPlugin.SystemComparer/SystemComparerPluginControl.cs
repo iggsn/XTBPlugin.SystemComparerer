@@ -12,10 +12,11 @@ using Microsoft.Xrm.Sdk;
 using Newtonsoft.Json;
 using XrmToolBox.Extensibility.Interfaces;
 using System.Collections.Specialized;
+using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : MultipleConnectionsPluginControlBase, IGitHubPlugin, IAboutPlugin
+    public partial class SystemComparerPluginControl : MultipleConnectionsPluginControlBase, IGitHubPlugin, IAboutPlugin, IStatusBarMessenger
     {
         const int StateImageIndexDashPlus = 0;
         const int StateImageIndexDashMinus = 1;
@@ -259,16 +260,26 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     LogInfo("Start retrieving metadata on Source");
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(5, $"Fetching Forms from Source..."));
                     _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
+
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(10, $"Fetching Views from Source..."));
                     _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
+
                     LogInfo("Start retrieving metadata on Target");
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(55, $"Fetching Forms from Target..."));
                     _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
+
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(60, $"Fetching Views from Target..."));
                     _systemComparer.RetrieveViews(ConnectionType.Target, _configuration.IncludeViews, worker.ReportProgress);
 
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs($"Finished fetching Data!"));
                     args.Result = _systemComparer;
                 },
                 PostWorkCallBack = (args) =>
@@ -496,5 +507,10 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
         #endregion
+
+        #region StatusBar
+        public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
+
+        #endregion  
     }
 }
