@@ -11,7 +11,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class EntityComparer : ComparerBase
     {
-        private List<string> ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
+        private readonly List<string> _ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
 
         public EntityComparer()
         { }
@@ -86,7 +86,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             ParentProperty = prop
                         };
 
-                        if (ignoreList.Any(s => parent.Name.Contains(s)))
+                        if (_ignoreList.Any(s => parent.Name.Contains(s)))
                         {
                             return;
                         }

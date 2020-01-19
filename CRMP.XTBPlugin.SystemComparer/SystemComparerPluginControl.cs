@@ -11,10 +11,12 @@ using XrmToolBox.Extensibility;
 using Microsoft.Xrm.Sdk;
 using Newtonsoft.Json;
 using XrmToolBox.Extensibility.Interfaces;
+using System.Collections.Specialized;
+using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer
 {
-    public partial class SystemComparerPluginControl : PluginControlBase, IXrmToolBoxPluginControl, IGitHubPlugin, IAboutPlugin
+    public partial class SystemComparerPluginControl : MultipleConnectionsPluginControlBase, IGitHubPlugin, IAboutPlugin, IStatusBarMessenger
     {
         const int StateImageIndexDashPlus = 0;
         const int StateImageIndexDashMinus = 1;
@@ -24,8 +26,8 @@ namespace CRMP.XTBPlugin.SystemComparer
         const int DifferenceImageIndexNotInSource = 2;
         const int DifferenceImageIndexNotInTarget = 3;
 
-        private ConnectionDetail _sourceConnection;
-        private ConnectionDetail _targetConnection;
+        private ConnectionDetail SourceConnection => ConnectionDetail;
+        private ConnectionDetail TargetConnection => AdditionalConnectionDetails[AdditionalConnectionDetails.Count - 1];
 
         internal Settings Settings;
 
@@ -40,8 +42,6 @@ namespace CRMP.XTBPlugin.SystemComparer
         public SystemComparerPluginControl()
         {
             InitializeComponent();
-            _sourceConnection = ConnectionDetail;
-
         }
 
         #region IGithubInterface
@@ -81,6 +81,11 @@ namespace CRMP.XTBPlugin.SystemComparer
             _telemetry.LogEvent(loadedSettings ? EventName.SettingsLoaded : EventName.SettingsCreated);
 
             _configuration = new Configuration();
+
+            if (Service != null)
+            {
+                SetSourceConnected();
+            }
 
             InitConfiguration(_configuration);
             InitBrowser(webBrowserSource);
@@ -176,46 +181,37 @@ namespace CRMP.XTBPlugin.SystemComparer
         private void buttonSourceChange_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Source Change button.");
-            if (OnRequestConnection != null)
+            RaiseRequestConnectionEvent(new RequestConnectionEventArgs()
             {
-                var arg = new RequestConnectionEventArgs
-                {
-                    ActionName = "SourceOrganization",
-                    Control = this
-                };
-                OnRequestConnection(this, arg);
-            }
+                ActionName = string.Empty,
+                Control = this
+            });
         }
 
         private void buttonChangeTarget_Click(object sender, EventArgs e)
         {
             LogInfo("Clicked on Target Change button.");
-            if (OnRequestConnection != null)
+            if (AdditionalConnectionDetails.Any())
             {
-                var arg = new RequestConnectionEventArgs
-                {
-                    ActionName = "TargetOrganization",
-                    Control = this
-                };
-                OnRequestConnection(this, arg);
+                RemoveAdditionalOrganization(TargetConnection);
             }
+
+            AddAdditionalOrganization();
         }
 
-        private void SetConnectionLabel(ConnectionDetail detail, string serviceType)
+        #region FormUI
+        private void SetSourceConnected()
         {
-            switch (serviceType)
-            {
-                case "Source":
-                    labelSourceName.Text = detail.ConnectionName;
-                    labelSourceName.ForeColor = Color.Green;
-                    break;
-
-                case "Target":
-                    labelTargetName.Text = detail.ConnectionName;
-                    labelTargetName.ForeColor = Color.Green;
-                    break;
-            }
+            labelSourceName.Text = ConnectionDetail.ConnectionName;
+            labelSourceName.ForeColor = Color.Green;
         }
+
+        private void SetTargetConnected()
+        {
+            labelTargetName.Text = TargetConnection.ConnectionName;
+            labelTargetName.ForeColor = Color.Green;
+        }
+        #endregion
 
         public override void ClosingPlugin(PluginCloseInfo info)
         {
@@ -228,25 +224,18 @@ namespace CRMP.XTBPlugin.SystemComparer
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail connectionDetail,
             string actionName = "", object parameter = null)
         {
-            if (actionName == "TargetOrganization")
+            base.UpdateConnection(newService, connectionDetail, actionName, parameter);
+
+            if (actionName == string.Empty)
             {
-                _targetConnection = connectionDetail;
-                SetConnectionLabel(connectionDetail, "Target");
+                SetSourceConnected();
             }
             else
             {
-                _sourceConnection = connectionDetail;
-                SetConnectionLabel(connectionDetail, "Source");
+                SetTargetConnected();
             }
 
-            if (_targetConnection != null && _sourceConnection != null)
-            {
-                tbbLoadMetadata.Enabled = true;
-            }
-            else
-            {
-                tbbLoadMetadata.Enabled = false;
-            }
+            tbbLoadMetadata.Enabled = Service != null && AdditionalConnectionDetails.Count > 0;
         }
 
         protected override void OnConnectionUpdated(ConnectionUpdatedEventArgs e)
@@ -256,9 +245,14 @@ namespace CRMP.XTBPlugin.SystemComparer
             base.OnConnectionUpdated(e);
         }
 
+        protected override void ConnectionDetailsUpdated(NotifyCollectionChangedEventArgs e)
+        {
+
+        }
+
         private void LoadEntities()
         {
-            _systemComparer = new Logic.SystemComparer(_sourceConnection, _targetConnection);
+            _systemComparer = new Logic.SystemComparer(SourceConnection, TargetConnection);
 
             WorkAsync(new WorkAsyncInfo
             {
@@ -266,16 +260,26 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     LogInfo("Start retrieving metadata on Source");
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
                     _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(5, $"Fetching Forms from Source..."));
                     _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
+
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(10, $"Fetching Views from Source..."));
                     _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
+
                     LogInfo("Start retrieving metadata on Target");
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
                     _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(55, $"Fetching Forms from Target..."));
                     _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
+
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(60, $"Fetching Views from Target..."));
                     _systemComparer.RetrieveViews(ConnectionType.Target, _configuration.IncludeViews, worker.ReportProgress);
 
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs($"Finished fetching Data!"));
                     args.Result = _systemComparer;
                 },
                 PostWorkCallBack = (args) =>
@@ -301,25 +305,25 @@ namespace CRMP.XTBPlugin.SystemComparer
                     if (_configuration.IncludeViews)
                     {
                         EntityComparer viewComparer = new EntityComparer();
-                        MetadataComparison viewComparison = viewComparer.Compare("Views", 
-                            emds._sourceCustomizationRoot.Views,
-                            emds._targetCustomizationRoot.Views);
+                        MetadataComparison viewComparison = viewComparer.Compare("Views",
+                            emds.SourceCustomizationRoot.Views,
+                            emds.TargetCustomizationRoot.Views);
                         AddItem(viewComparison, null);
                     }
 
                     if (_configuration.IncludeForms)
                     {
                         EntityComparer formComparer = new EntityComparer();
-                        MetadataComparison formComparison = formComparer.Compare("Forms", 
-                            emds._sourceCustomizationRoot.Forms,
-                            emds._targetCustomizationRoot.Forms);
+                        MetadataComparison formComparison = formComparer.Compare("Forms",
+                            emds.SourceCustomizationRoot.Forms,
+                            emds.TargetCustomizationRoot.Forms);
                         AddItem(formComparison, null);
                     }
 
                     MetadataComparer comparer = new MetadataComparer();
-                    MetadataComparison comparison = comparer.Compare("Entities", 
-                        emds._sourceCustomizationRoot.EntitiesRaw,
-                        emds._targetCustomizationRoot.EntitiesRaw);
+                    MetadataComparison comparison = comparer.Compare("Entities",
+                        emds.SourceCustomizationRoot.EntitiesRaw,
+                        emds.TargetCustomizationRoot.EntitiesRaw);
                     AddItem(comparison, null);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
@@ -503,5 +507,10 @@ namespace CRMP.XTBPlugin.SystemComparer
             }
         }
         #endregion
+
+        #region StatusBar
+        public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
+
+        #endregion  
     }
 }

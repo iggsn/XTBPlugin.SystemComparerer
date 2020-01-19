@@ -15,7 +15,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         public EventHandler<EventArgs> LogHandler;
 
         public MetadataComparer()
-        {  }
+        { }
 
         public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
         {
@@ -54,13 +54,13 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         string name;
 
 
-                       switch (type.Name)
+                        switch (type.Name)
                         {
                             case "EntityMetadata":
-                            {
-                                name = ((EntityMetadata)(source ?? target)).LogicalName;
-                                break;
-                            }
+                                {
+                                    name = ((EntityMetadata)(source ?? target)).LogicalName;
+                                    break;
+                                }
                             case "AttributeMetadata":
                             case "StringAttributeMetadata":
                             case "MemoAttributeMetadata":
@@ -80,8 +80,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             case "MultiSelectPicklistAttributeMetadata":
                             case "StatusAttributeMetadata":
                                 {
-                                name = ((AttributeMetadata)(source ?? target)).LogicalName;
-                                break;
+                                    name = ((AttributeMetadata)(source ?? target)).LogicalName;
+                                    break;
                                 }
                             default:
                                 name = prop.Name;
@@ -98,11 +98,19 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     if (IsSimpleType(type) && !_ignoreList.Any(s => parent.Name.Contains(s)))
                     {
                         // for simple types just compare values
-                         if (!Equals(source, target))
-                         {
-                             originalParent.IsDifferent = true;
-                             parent.IsDifferent = true;
-                         }
+                        if (parent.Name == "AutoNumberFormat" && 
+                            (source == null || string.IsNullOrEmpty(source.ToString())) && 
+                            (target == null || string.IsNullOrEmpty(target.ToString()))
+                            )
+                        {
+                            originalParent.IsDifferent = false;
+                            parent.IsDifferent = false;
+                        } 
+                        else if (!Equals(source, target))
+                        {
+                            originalParent.IsDifferent = true;
+                            parent.IsDifferent = true;
+                        }
                     }
                     else if (typeof(IEnumerable).IsAssignableFrom(type))
                     {

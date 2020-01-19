@@ -4,7 +4,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Forms
 {
     public partial class Options : Form
     {
-        private SystemComparerPluginControl _plugin;
+        private readonly SystemComparerPluginControl _plugin;
 
         public Options(SystemComparerPluginControl plugin)
         {
@@ -33,12 +33,12 @@ namespace CRMP.XTBPlugin.SystemComparer.Forms
             return settings;
         }
 
-        private void buttonCancel_Click(object sender, System.EventArgs e)
+        private void ButtonCancel_Click(object sender, System.EventArgs e)
         {
             Close();
         }
 
-        private void buttonOk_Click(object sender, System.EventArgs e)
+        private void ButtonOk_Click(object sender, System.EventArgs e)
         {
             _plugin.Settings = GetSettings();
             _plugin.SaveSettings();
