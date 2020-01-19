@@ -85,6 +85,12 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 SyncOptionMetadata(ref source, ref target);
                 return;
             }
+            
+            if(typeof(ManyToManyRelationshipMetadata).IsAssignableFrom(elementType))
+            {
+                SyncManyToManyRelationshipMetadata(ref source, ref target);
+                return;
+            }
         }
 
         private static void SyncEntityMetadata(ref Array source, ref Array target)
@@ -138,6 +144,23 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             target = SortAndPad3(combinedIdentities, targetIdentities);
         }
 
+        private static void SyncManyToManyRelationshipMetadata(ref Array source, ref Array target)
+        {
+            ManyToManyRelationshipMetadata[] sourceIdentities = source?.Cast<ManyToManyRelationshipMetadata>().ToArray() ?? new ManyToManyRelationshipMetadata[0];
+
+            ManyToManyRelationshipMetadata[] targetIdentities = target?.Cast<ManyToManyRelationshipMetadata>().ToArray() ?? new ManyToManyRelationshipMetadata[0];
+
+            // create a list of combined entities to determine the order by 
+            // which both lists will be sorted
+            string[] combinedIdentities = sourceIdentities.Select(i => i.IntersectEntityName)
+                .Union(targetIdentities.Select(i => i.IntersectEntityName))
+                .OrderBy(s => s)
+                .ToArray();
+
+            source = SortAndPad4(combinedIdentities, sourceIdentities);
+            target = SortAndPad4(combinedIdentities, targetIdentities);
+        }
+
         /// <summary>
         /// Sorts an array based on a set of keys and fills in missing key values with null.
         /// </summary>
@@ -168,6 +191,15 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 
             return identityKeys
                 .Select(k => array.FirstOrDefault(i => i.Value == k))
+                .ToArray();
+        }
+
+        private static Array SortAndPad4(string[] identityKeys, ManyToManyRelationshipMetadata[] array)
+        {
+            if (array == null) return null;
+
+            return identityKeys
+                .Select(k => array.FirstOrDefault(i => i.IntersectEntityName == k))
                 .ToArray();
         }
     }
