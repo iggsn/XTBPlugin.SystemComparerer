@@ -97,6 +97,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             checkboxWithAttributes.Checked = configuration.IncludeAttributeMetadata;
             checkboxForms.Checked = configuration.IncludeForms;
             checkboxViews.Checked = configuration.IncludeViews;
+            checkboxListHideEqual.Checked = configuration.ListHideEqualItems;
         }
 
         private void InitBrowser(WebBrowser webBrowser)
@@ -293,45 +294,62 @@ namespace CRMP.XTBPlugin.SystemComparer
 
                     var emds = (Logic.SystemComparer)args.Result;
 
-                    comparisonListView.Items.Clear();
-
-                    /*OrganizationComparer orgComparer = new OrganizationComparer();
-                    MetadataComparison orgComparison = null;
-                    orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
-                        emds._targetCustomizationRoot.Organizations);*/
-
-
-
-                    if (_configuration.IncludeViews)
-                    {
-                        EntityComparer viewComparer = new EntityComparer();
-                        MetadataComparison viewComparison = viewComparer.Compare("Views",
-                            emds.SourceCustomizationRoot.Views,
-                            emds.TargetCustomizationRoot.Views);
-                        AddItem(viewComparison, null);
-                    }
-
-                    if (_configuration.IncludeForms)
-                    {
-                        EntityComparer formComparer = new EntityComparer();
-                        MetadataComparison formComparison = formComparer.Compare("Forms",
-                            emds.SourceCustomizationRoot.Forms,
-                            emds.TargetCustomizationRoot.Forms);
-                        AddItem(formComparison, null);
-                    }
-
-                    MetadataComparer comparer = new MetadataComparer();
-                    MetadataComparison comparison = comparer.Compare("Entities",
-                        emds.SourceCustomizationRoot.EntitiesRaw,
-                        emds.TargetCustomizationRoot.EntitiesRaw);
-                    AddItem(comparison, null);
+                    CreateListFromResults(emds);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
         }
 
+        private void CreateListFromResults(Logic.SystemComparer emds)
+        {
+            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(0, $"Generating List"));
+            comparisonListView.Items.Clear();
+
+            /*OrganizationComparer orgComparer = new OrganizationComparer();
+                    MetadataComparison orgComparison = null;
+                    orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
+                        emds._targetCustomizationRoot.Organizations);*/
+
+
+            if (_configuration.IncludeViews)
+            {
+                SendMessageToStatusBar(this, new StatusBarMessageEventArgs(0, "Processing Views..."));
+                EntityComparer viewComparer = new EntityComparer();
+                MetadataComparison viewComparison = viewComparer.Compare("Views",
+                    emds.SourceCustomizationRoot.Views,
+                    emds.TargetCustomizationRoot.Views);
+                AddItem(viewComparison, null);
+            }
+
+            if (_configuration.IncludeForms)
+            {
+                SendMessageToStatusBar(this, new StatusBarMessageEventArgs(33, "Processing Forms..."));
+                EntityComparer formComparer = new EntityComparer();
+                MetadataComparison formComparison = formComparer.Compare("Forms",
+                    emds.SourceCustomizationRoot.Forms,
+                    emds.TargetCustomizationRoot.Forms);
+                AddItem(formComparison, null);
+            }
+
+            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(66, "Processing Forms..."));
+            MetadataComparer comparer = new MetadataComparer();
+            MetadataComparison comparison = comparer.Compare("Entities",
+                emds.SourceCustomizationRoot.EntitiesRaw,
+                emds.TargetCustomizationRoot.EntitiesRaw);
+            AddItem(comparison, null);
+
+            SendMessageToStatusBar(this, new StatusBarMessageEventArgs("List generated!"));
+        }
+
         private void AddItem(MetadataComparison customizationRoot, ListViewItem parentItem)
         {
+            if (_configuration.ListHideEqualItems &&
+                (customizationRoot.Name != "Entities" || customizationRoot.Name != "Forms" || customizationRoot.Name != "Views")
+                && customizationRoot.IsDifferent == false)
+            {
+                return;
+            }
+
             ListViewItem item = new ListViewItem
             {
                 Text = customizationRoot.Name,
@@ -502,6 +520,9 @@ namespace CRMP.XTBPlugin.SystemComparer
                         break;
                     case "checkboxViews":
                         _configuration.IncludeViews = checkboxViews.Checked;
+                        break;
+                    case "checkboxListHideEqual":
+                        _configuration.ListHideEqualItems = checkboxListHideEqual.Checked;
                         break;
                 }
             }

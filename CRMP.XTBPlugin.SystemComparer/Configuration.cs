@@ -8,11 +8,14 @@
 
         internal bool IncludeViews { get; set; }
 
+        internal bool ListHideEqualItems { get; set; }
+
         public Configuration()
         {
             IncludeAttributeMetadata = true;
             IncludeForms = false;
             IncludeViews = false;
+            ListHideEqualItems = true;
         }
     }
 }

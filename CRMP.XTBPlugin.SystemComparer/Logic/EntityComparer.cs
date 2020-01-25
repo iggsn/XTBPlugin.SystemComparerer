@@ -6,6 +6,7 @@ using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using CRMP.XTBPlugin.SystemComparer.Metadata;
 using Microsoft.Xrm.Sdk;
+using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
@@ -20,7 +21,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
-
+            
             return entities;
         }
 

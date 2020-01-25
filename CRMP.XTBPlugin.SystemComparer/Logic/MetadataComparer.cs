@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using Microsoft.Xrm.Sdk.Metadata;
+using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {

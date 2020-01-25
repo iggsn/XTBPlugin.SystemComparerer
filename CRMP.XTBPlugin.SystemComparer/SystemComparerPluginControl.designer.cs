@@ -61,6 +61,8 @@
             this.checkboxViews = new System.Windows.Forms.CheckBox();
             this.checkboxForms = new System.Windows.Forms.CheckBox();
             this.checkboxWithAttributes = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkboxListHideEqual = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOverview)).BeginInit();
@@ -73,6 +75,7 @@
             this.splitContainerCompare.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -86,7 +89,7 @@
             this.tbbOptions});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(907, 31);
+            this.toolStripMenu.Size = new System.Drawing.Size(1276, 31);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -217,7 +220,7 @@
             this.comparisonListView.HideSelection = false;
             this.comparisonListView.Location = new System.Drawing.Point(3, 3);
             this.comparisonListView.Name = "comparisonListView";
-            this.comparisonListView.Size = new System.Drawing.Size(895, 271);
+            this.comparisonListView.Size = new System.Drawing.Size(1264, 271);
             this.comparisonListView.SmallImageList = this.DifferenceList;
             this.comparisonListView.StateImageList = this.TreeImagesList;
             this.comparisonListView.TabIndex = 0;
@@ -292,7 +295,7 @@
             // splitContainerOverview.Panel2
             // 
             this.splitContainerOverview.Panel2.Controls.Add(this.splitContainerCompare);
-            this.splitContainerOverview.Size = new System.Drawing.Size(901, 463);
+            this.splitContainerOverview.Size = new System.Drawing.Size(1270, 463);
             this.splitContainerOverview.SplitterDistance = 277;
             this.splitContainerOverview.TabIndex = 6;
             // 
@@ -309,8 +312,8 @@
             // splitContainerCompare.Panel2
             // 
             this.splitContainerCompare.Panel2.Controls.Add(this.webBrowserTarget);
-            this.splitContainerCompare.Size = new System.Drawing.Size(901, 182);
-            this.splitContainerCompare.SplitterDistance = 454;
+            this.splitContainerCompare.Size = new System.Drawing.Size(1270, 182);
+            this.splitContainerCompare.SplitterDistance = 639;
             this.splitContainerCompare.TabIndex = 0;
             // 
             // webBrowserSource
@@ -319,7 +322,7 @@
             this.webBrowserSource.Location = new System.Drawing.Point(0, 0);
             this.webBrowserSource.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserSource.Name = "webBrowserSource";
-            this.webBrowserSource.Size = new System.Drawing.Size(454, 182);
+            this.webBrowserSource.Size = new System.Drawing.Size(639, 182);
             this.webBrowserSource.TabIndex = 0;
             // 
             // webBrowserTarget
@@ -328,7 +331,7 @@
             this.webBrowserTarget.Location = new System.Drawing.Point(0, 0);
             this.webBrowserTarget.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserTarget.Name = "webBrowserTarget";
-            this.webBrowserTarget.Size = new System.Drawing.Size(443, 182);
+            this.webBrowserTarget.Size = new System.Drawing.Size(627, 182);
             this.webBrowserTarget.TabIndex = 0;
             // 
             // systemComparerBindingSource
@@ -340,9 +343,9 @@
             this.groupBox2.Controls.Add(this.checkboxViews);
             this.groupBox2.Controls.Add(this.checkboxForms);
             this.groupBox2.Controls.Add(this.checkboxWithAttributes);
-            this.groupBox2.Location = new System.Drawing.Point(501, 34);
+            this.groupBox2.Location = new System.Drawing.Point(500, 34);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(403, 94);
+            this.groupBox2.Size = new System.Drawing.Size(380, 94);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Settings";
@@ -379,16 +382,37 @@
             this.checkboxWithAttributes.UseVisualStyleBackColor = true;
             this.checkboxWithAttributes.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.checkboxListHideEqual);
+            this.groupBox3.Location = new System.Drawing.Point(886, 37);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(380, 94);
+            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "List Settings";
+            // 
+            // checkboxListHideEqual
+            // 
+            this.checkboxListHideEqual.Location = new System.Drawing.Point(6, 19);
+            this.checkboxListHideEqual.Name = "checkboxListHideEqual";
+            this.checkboxListHideEqual.Size = new System.Drawing.Size(151, 17);
+            this.checkboxListHideEqual.TabIndex = 0;
+            this.checkboxListHideEqual.Text = "Hide equal items";
+            this.checkboxListHideEqual.UseVisualStyleBackColor = true;
+            this.checkboxListHideEqual.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
+            // 
             // SystemComparerPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.splitContainerOverview);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "SystemComparerPluginControl";
-            this.Size = new System.Drawing.Size(907, 600);
+            this.Size = new System.Drawing.Size(1276, 600);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
@@ -405,6 +429,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.systemComparerBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -442,5 +467,7 @@
         private System.Windows.Forms.CheckBox checkboxViews;
         private System.Windows.Forms.CheckBox checkboxForms;
         private System.Windows.Forms.CheckBox checkboxWithAttributes;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox checkboxListHideEqual;
     }
 }
