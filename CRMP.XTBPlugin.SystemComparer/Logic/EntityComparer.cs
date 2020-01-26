@@ -20,7 +20,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
         {
             MetadataComparison entities = new MetadataComparison(name, source, target, null);
             BuildComparisons(entities, null, source, target);
-
+            
             return entities;
         }
 

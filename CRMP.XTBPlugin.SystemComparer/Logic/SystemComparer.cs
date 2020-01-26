@@ -29,7 +29,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             _targetConnection = targetConnection;
         }
 
-        public void RetrieveMetadata(ConnectionType connectionType, bool includeAttributes , Action<int, string> reportProgress)
+        public void RetrieveMetadata(ConnectionType connectionType, bool allEntityFilter , Action<int, string> reportProgress)
         {
             reportProgress(0, $"Fetching Entity Metadata from {connectionType.ToString()}");
 
@@ -37,7 +37,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             CustomizationRoot customizationRoot = GetCustomizationRoot(connectionType);
 
             // Retrieve the MetaData.
-            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, includeAttributes ? EntityFilters.Attributes : EntityFilters.All);
+            List<EntityMetadata> entitiesMetadata = crmServiceClient.GetAllEntityMetadata(true, allEntityFilter ? EntityFilters.Attributes : EntityFilters.All);
 
             customizationRoot.EntitiesRaw = entitiesMetadata;
         }

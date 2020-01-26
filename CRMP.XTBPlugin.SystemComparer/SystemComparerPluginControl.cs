@@ -35,7 +35,6 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private Configuration _configuration;
 
-        public new event EventHandler OnRequestConnection;
 
         private Logic.SystemComparer _systemComparer;
 
@@ -50,16 +49,13 @@ namespace CRMP.XTBPlugin.SystemComparer
         #endregion
 
         /// <summary>
-        /// Entrypoint of the Plugin. Will execute on load of the plugin
-        /// Initializes the settings and the two webbrowser windows
+        /// Entry-point of the Plugin. Will execute on load of the plugin
+        /// Initializes the settings and the two web-browser windows
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            /*ShowInfoNotification("This is a notification that can lead to XrmToolBox repository",
-                new Uri("http://github.com/MscrmTools/XrmToolBox"));*/
-
             bool loadedSettings;
 
             // Loads or creates the settings for the plugin
@@ -94,9 +90,11 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void InitConfiguration(Configuration configuration)
         {
-            checkboxWithAttributes.Checked = configuration.IncludeAttributeMetadata;
+            checkboxAllAttributes.Checked = configuration.IncludeAllMetadata;
             checkboxForms.Checked = configuration.IncludeForms;
             checkboxViews.Checked = configuration.IncludeViews;
+            checkboxListHideEqual.Checked = configuration.ListHideEqualItems;
+            checkboxIgnoreDevProd.Checked = configuration.IgnoreManagedState;
         }
 
         private void InitBrowser(WebBrowser webBrowser)
@@ -260,26 +258,26 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     LogInfo("Start retrieving metadata on Source");
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAllMetadata ? "with Attributes" : "without Attributes")}..."));
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAllMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(5, $"Fetching Forms from Source..."));
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(5, $"Fetching Forms from Source..."));
                     _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
 
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(10, $"Fetching Views from Source..."));
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(10, $"Fetching Views from Source..."));
                     _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
 
                     LogInfo("Start retrieving metadata on Target");
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAllMetadata ? "with Attributes" : "without Attributes")}..."));
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAllMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(55, $"Fetching Forms from Target..."));
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(55, $"Fetching Forms from Target..."));
                     _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
 
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(60, $"Fetching Views from Target..."));
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(60, $"Fetching Views from Target..."));
                     _systemComparer.RetrieveViews(ConnectionType.Target, _configuration.IncludeViews, worker.ReportProgress);
 
-                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs($"Finished fetching Data!"));
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs($"Finished fetching Data!"));
                     args.Result = _systemComparer;
                 },
                 PostWorkCallBack = (args) =>
@@ -293,45 +291,62 @@ namespace CRMP.XTBPlugin.SystemComparer
 
                     var emds = (Logic.SystemComparer)args.Result;
 
-                    comparisonListView.Items.Clear();
-
-                    /*OrganizationComparer orgComparer = new OrganizationComparer();
-                    MetadataComparison orgComparison = null;
-                    orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
-                        emds._targetCustomizationRoot.Organizations);*/
-
-
-
-                    if (_configuration.IncludeViews)
-                    {
-                        EntityComparer viewComparer = new EntityComparer();
-                        MetadataComparison viewComparison = viewComparer.Compare("Views",
-                            emds.SourceCustomizationRoot.Views,
-                            emds.TargetCustomizationRoot.Views);
-                        AddItem(viewComparison, null);
-                    }
-
-                    if (_configuration.IncludeForms)
-                    {
-                        EntityComparer formComparer = new EntityComparer();
-                        MetadataComparison formComparison = formComparer.Compare("Forms",
-                            emds.SourceCustomizationRoot.Forms,
-                            emds.TargetCustomizationRoot.Forms);
-                        AddItem(formComparison, null);
-                    }
-
-                    MetadataComparer comparer = new MetadataComparer();
-                    MetadataComparison comparison = comparer.Compare("Entities",
-                        emds.SourceCustomizationRoot.EntitiesRaw,
-                        emds.TargetCustomizationRoot.EntitiesRaw);
-                    AddItem(comparison, null);
+                    CreateListFromResults(emds);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
         }
 
+        private void CreateListFromResults(Logic.SystemComparer emds)
+        {
+            SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, $"Generating List"));
+            comparisonListView.Items.Clear();
+
+            /*OrganizationComparer orgComparer = new OrganizationComparer();
+                    MetadataComparison orgComparison = null;
+                    orgComparison = orgComparer.Compare("Organization", emds._sourceCustomizationRoot.Organizations,
+                        emds._targetCustomizationRoot.Organizations);*/
+
+
+            if (_configuration.IncludeViews)
+            {
+                SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, "Processing Views..."));
+                EntityComparer viewComparer = new EntityComparer();
+                MetadataComparison viewComparison = viewComparer.Compare("Views",
+                    emds.SourceCustomizationRoot.Views,
+                    emds.TargetCustomizationRoot.Views);
+                AddItem(viewComparison, null);
+            }
+
+            if (_configuration.IncludeForms)
+            {
+                SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(33, "Processing Forms..."));
+                EntityComparer formComparer = new EntityComparer();
+                MetadataComparison formComparison = formComparer.Compare("Forms",
+                    emds.SourceCustomizationRoot.Forms,
+                    emds.TargetCustomizationRoot.Forms);
+                AddItem(formComparison, null);
+            }
+
+            SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(66, "Processing Forms..."));
+            MetadataComparer comparer = new MetadataComparer(_configuration);
+            MetadataComparison comparison = comparer.Compare("Entities",
+                emds.SourceCustomizationRoot.EntitiesRaw,
+                emds.TargetCustomizationRoot.EntitiesRaw);
+            AddItem(comparison, null);
+
+            SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs("List generated!"));
+        }
+
         private void AddItem(MetadataComparison customizationRoot, ListViewItem parentItem)
         {
+            if (_configuration.ListHideEqualItems &&
+                (customizationRoot.Name != "Entities" || customizationRoot.Name != "Forms" || customizationRoot.Name != "Views")
+                && customizationRoot.IsDifferent == false)
+            {
+                return;
+            }
+
             ListViewItem item = new ListViewItem
             {
                 Text = customizationRoot.Name,
@@ -495,13 +510,16 @@ namespace CRMP.XTBPlugin.SystemComparer
                 switch (configBox.Name)
                 {
                     case "checkboxWithAttributes":
-                        _configuration.IncludeAttributeMetadata = checkboxWithAttributes.Checked;
+                        _configuration.IncludeAllMetadata = checkboxAllAttributes.Checked;
                         break;
                     case "checkboxForms":
                         _configuration.IncludeForms = checkboxForms.Checked;
                         break;
                     case "checkboxViews":
                         _configuration.IncludeViews = checkboxViews.Checked;
+                        break;
+                    case "checkboxListHideEqual":
+                        _configuration.ListHideEqualItems = checkboxListHideEqual.Checked;
                         break;
                 }
             }
