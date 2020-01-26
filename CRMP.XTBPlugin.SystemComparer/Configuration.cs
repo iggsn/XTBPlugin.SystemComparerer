@@ -2,7 +2,7 @@
 {
     public class Configuration
     {
-        internal bool IncludeAttributeMetadata { get; set; }
+        internal bool IncludeAllMetadata { get; set; }
 
         internal bool IncludeForms { get; set; }
 
@@ -14,7 +14,7 @@
 
         public Configuration()
         {
-            IncludeAttributeMetadata = true;
+            IncludeAllMetadata = false;
             IncludeForms = false;
             IncludeViews = false;
             ListHideEqualItems = true;

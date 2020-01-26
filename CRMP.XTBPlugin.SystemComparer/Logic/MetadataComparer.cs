@@ -122,7 +122,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                     else
                     {
                         // for classes, just compare each property
-                        foreach (PropertyInfo p in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                        foreach (PropertyInfo p in type.GetProperties(BindingFlags.Instance | BindingFlags.Public).OrderBy(property => property.Name))
                         {
                             if (p.CanRead)
                             {

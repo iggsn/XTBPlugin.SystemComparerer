@@ -90,7 +90,7 @@ namespace CRMP.XTBPlugin.SystemComparer
 
         private void InitConfiguration(Configuration configuration)
         {
-            checkboxWithAttributes.Checked = configuration.IncludeAttributeMetadata;
+            checkboxAllAttributes.Checked = configuration.IncludeAllMetadata;
             checkboxForms.Checked = configuration.IncludeForms;
             checkboxViews.Checked = configuration.IncludeViews;
             checkboxListHideEqual.Checked = configuration.ListHideEqualItems;
@@ -258,8 +258,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                 Work = (worker, args) =>
                 {
                     LogInfo("Start retrieving metadata on Source");
-                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
-                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, $"Fetching Metadata from Source {(_configuration.IncludeAllMetadata ? "with Attributes" : "without Attributes")}..."));
+                    _systemComparer.RetrieveMetadata(ConnectionType.Source, _configuration.IncludeAllMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Source, worker.ReportProgress);
                     SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(5, $"Fetching Forms from Source..."));
                     _systemComparer.RetrieveForms(ConnectionType.Source, _configuration.IncludeForms, worker.ReportProgress);
@@ -268,8 +268,8 @@ namespace CRMP.XTBPlugin.SystemComparer
                     _systemComparer.RetrieveViews(ConnectionType.Source, _configuration.IncludeViews, worker.ReportProgress);
 
                     LogInfo("Start retrieving metadata on Target");
-                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAttributeMetadata ? "with Attributes" : "without Attributes")}..."));
-                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAttributeMetadata, worker.ReportProgress);
+                    SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(50, $"Fetching Metadata from Target {(_configuration.IncludeAllMetadata ? "with Attributes" : "without Attributes")}..."));
+                    _systemComparer.RetrieveMetadata(ConnectionType.Target, _configuration.IncludeAllMetadata, worker.ReportProgress);
                     //_systemComparer.RetrieveOrganization(ConnectionType.Target, worker.ReportProgress);
                     SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(55, $"Fetching Forms from Target..."));
                     _systemComparer.RetrieveForms(ConnectionType.Target, _configuration.IncludeForms, worker.ReportProgress);
@@ -510,7 +510,7 @@ namespace CRMP.XTBPlugin.SystemComparer
                 switch (configBox.Name)
                 {
                     case "checkboxWithAttributes":
-                        _configuration.IncludeAttributeMetadata = checkboxWithAttributes.Checked;
+                        _configuration.IncludeAllMetadata = checkboxAllAttributes.Checked;
                         break;
                     case "checkboxForms":
                         _configuration.IncludeForms = checkboxForms.Checked;
