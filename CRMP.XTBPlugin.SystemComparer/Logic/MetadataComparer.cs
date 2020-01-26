@@ -5,18 +5,21 @@ using System.Linq;
 using System.Reflection;
 using CRMP.XTBPlugin.SystemComparer.DataModel;
 using Microsoft.Xrm.Sdk.Metadata;
-using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer : ComparerBase
     {
-        private readonly List<string> _ignoreList = new List<string> { "MetadataId", "ColumnNumber" };
+        private readonly List<string> _ignoreList = new List<string> { "MetadataId", "ColumnNumber", "PrivilegeId" };
 
-        public EventHandler<EventArgs> LogHandler;
+        private readonly List<string> _ignoreManagedList = new List<string> { "IsManaged", "CanBeChanged" };
 
-        public MetadataComparer()
-        { }
+        private readonly Configuration _configuration;
+
+        public MetadataComparer(Configuration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
         {
@@ -24,11 +27,6 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
             BuildComparisons(entities, null, source, target);
 
             return entities;
-        }
-
-        private void OnLogMessageRaised(EventArgs e)
-        {
-            LogHandler?.Invoke(this, e);
         }
 
         private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
@@ -104,9 +102,12 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             (target == null || string.IsNullOrEmpty(target.ToString()))
                             )
                         {
-                            originalParent.IsDifferent = false;
-                            parent.IsDifferent = false;
-                        } 
+                            // Ignore AutonumberFormat when null or Empty String
+                        }
+                        else if (_configuration.IgnoreManagedState && _ignoreManagedList.Any(s => parent.Name.Contains(s)))
+                        {
+                            // ignore IsManaged
+                        }
                         else if (!Equals(source, target))
                         {
                             originalParent.IsDifferent = true;

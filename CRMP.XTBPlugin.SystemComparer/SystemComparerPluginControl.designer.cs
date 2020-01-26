@@ -62,6 +62,7 @@
             this.checkboxForms = new System.Windows.Forms.CheckBox();
             this.checkboxWithAttributes = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkboxIgnoreDevProd = new System.Windows.Forms.CheckBox();
             this.checkboxListHideEqual = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -340,6 +341,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.checkboxIgnoreDevProd);
             this.groupBox2.Controls.Add(this.checkboxViews);
             this.groupBox2.Controls.Add(this.checkboxForms);
             this.groupBox2.Controls.Add(this.checkboxWithAttributes);
@@ -391,6 +393,16 @@
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "List Settings";
+            // 
+            // checkboxIgnoreDevProd
+            // 
+            this.checkboxIgnoreDevProd.Location = new System.Drawing.Point(223, 19);
+            this.checkboxIgnoreDevProd.Name = "checkboxIgnoreDevProd";
+            this.checkboxIgnoreDevProd.Size = new System.Drawing.Size(151, 17);
+            this.checkboxIgnoreDevProd.TabIndex = 1;
+            this.checkboxIgnoreDevProd.Text = "Compare Dev to Prod";
+            this.checkboxIgnoreDevProd.UseVisualStyleBackColor = true;
+            this.checkboxIgnoreDevProd.Click += new System.EventHandler(this.checkboxAnyConfiguration_Click);
             // 
             // checkboxListHideEqual
             // 
@@ -469,5 +481,6 @@
         private System.Windows.Forms.CheckBox checkboxWithAttributes;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox checkboxListHideEqual;
+        private System.Windows.Forms.CheckBox checkboxIgnoreDevProd;
     }
 }
