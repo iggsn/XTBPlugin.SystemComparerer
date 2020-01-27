@@ -13,6 +13,7 @@
     <description>This is an XrmToolBox Plugin to compare two CRM Organizations for differences.</description>
     <releaseNotes>
       These are the included main changes
+      - fixed wrong version in Nuget package
       - Option to hide equal items
       - Option to ignore changes when comparing unmanaged with managed environment
       - Fixed issue to not show all changes in yellow

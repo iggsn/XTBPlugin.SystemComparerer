@@ -203,7 +203,7 @@
       <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
     <ItemGroup>
-      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.18\tools\ilrepack.exe" />
     </ItemGroup>
     <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
     <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
@@ -226,7 +226,7 @@
       <MergeAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
     <ItemGroup>
-      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.16\tools\ilrepack.exe" />
+      <ILRepackPackage Include="$(NuGetPackageRoot)\ilrepack\2.0.18\tools\ilrepack.exe" />
     </ItemGroup>
     <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA; package, but it is not installed or at the correct location" />
     <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
