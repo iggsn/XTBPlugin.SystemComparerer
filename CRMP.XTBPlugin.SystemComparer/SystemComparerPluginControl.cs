@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,6 +13,12 @@ using Microsoft.Xrm.Sdk;
 using Newtonsoft.Json;
 using XrmToolBox.Extensibility.Interfaces;
 using System.Collections.Specialized;
+using System.IO;
+using System.Text;
+using System.Web;
+using System.Web.UI;
+using CRMP.XTBPlugin.SystemComparer.Metadata;
+using Microsoft.Xrm.Sdk.Metadata;
 using XrmToolBox.Extensibility.Args;
 
 namespace CRMP.XTBPlugin.SystemComparer
@@ -312,7 +319,7 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(0, "Processing Views..."));
                 EntityComparer viewComparer = new EntityComparer();
-                MetadataComparison viewComparison = viewComparer.Compare("Views",
+                MetadataComparison viewComparison = viewComparer.Compare<CustomizationEntity>("Views",
                     emds.SourceCustomizationRoot.Views,
                     emds.TargetCustomizationRoot.Views);
                 AddItem(viewComparison, null);
@@ -322,15 +329,15 @@ namespace CRMP.XTBPlugin.SystemComparer
             {
                 SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(33, "Processing Forms..."));
                 EntityComparer formComparer = new EntityComparer();
-                MetadataComparison formComparison = formComparer.Compare("Forms",
+                MetadataComparison formComparison = formComparer.Compare<CustomizationEntity>("Forms",
                     emds.SourceCustomizationRoot.Forms,
                     emds.TargetCustomizationRoot.Forms);
                 AddItem(formComparison, null);
             }
 
-            SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(66, "Processing Forms..."));
+            SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(66, "Processing Entities..."));
             MetadataComparer comparer = new MetadataComparer(_configuration);
-            MetadataComparison comparison = comparer.Compare("Entities",
+            MetadataComparison comparison = comparer.Compare<EntityMetadata>("Entities",
                 emds.SourceCustomizationRoot.EntitiesRaw,
                 emds.TargetCustomizationRoot.EntitiesRaw);
             AddItem(comparison, null);
@@ -444,11 +451,13 @@ namespace CRMP.XTBPlugin.SystemComparer
                 webBrowserTarget.Document.Body.InnerHtml = "";
 
                 string sourceString = JsonConvert.SerializeObject(comparison.SourceValue, Formatting.Indented,
-                    new JsonSerializerSettings { MaxDepth = 1 });
+                    new JsonSerializerSettings { });
                 string targetString = JsonConvert.SerializeObject(comparison.TargetValue, Formatting.Indented,
-                    new JsonSerializerSettings { MaxDepth = 1 });
+                    new JsonSerializerSettings { });
 
-                /*List<string> sourceLines = new List<string>();
+                var sourceNode = JsonConvert.DeserializeXmlNode(sourceString, "root");
+
+                List<string> sourceLines = new List<string>();
 
                 JsonTextReader reader = new JsonTextReader(new StringReader(sourceString));
                 while (reader.Read())
@@ -474,9 +483,9 @@ namespace CRMP.XTBPlugin.SystemComparer
                     sourceWriter.Write(sourceLines[i].Replace(" ", "&nbsp;").Replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"));
                     sourceWriter.RenderEndTag();
                     sourceWriter.RenderEndTag();
-                }*/
+                }
 
-                webBrowserSource.Document.Body.InnerHtml = sourceString /*sourceBuilder.ToString()*/;
+                webBrowserSource.Document.Body.InnerHtml = sourceString.ToString();
                 webBrowserTarget.Document.Body.InnerHtml = targetString;
             }
         }

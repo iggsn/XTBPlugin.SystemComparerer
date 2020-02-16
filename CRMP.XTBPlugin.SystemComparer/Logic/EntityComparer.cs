@@ -11,20 +11,15 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class EntityComparer : ComparerBase
     {
-        private readonly List<string> _ignoreList = new List<string> { "ExtensionData", "RowVersion", "FormattedValues", "versionnumber" };
-
         public EntityComparer()
-        { }
-
-        public MetadataComparison Compare(string name, List<CustomizationEntity> source, List<CustomizationEntity> target)
         {
-            MetadataComparison entities = new MetadataComparison(name, source, target, null);
-            BuildComparisons(entities, null, source, target);
-            
-            return entities;
+            IgnoreList.Add("ExtensionData");
+            IgnoreList.Add("RowVersion");
+            IgnoreList.Add("FormattedValues");
+            IgnoreList.Add("versionnumber");
         }
 
-        private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
+        protected override void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
         {
             //OnLogMessageRaised(new EventArgs());
             // Make sure at least one value is not null
@@ -72,7 +67,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                                     name = ((KeyValuePair<string, dynamic>)(source ?? target)).Key;
                                     source = ((KeyValuePair<string, object>?)source)?.Value;
                                     target = ((KeyValuePair<string, object>?)target)?.Value;
-                                    
+
                                     type = GetCommonType(source, target);
                                     break;
                                 }
@@ -86,7 +81,7 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                             ParentProperty = prop
                         };
 
-                        if (_ignoreList.Any(s => parent.Name.Contains(s)))
+                        if (IgnoreList.Any(s => parent.Name.Contains(s)))
                         {
                             return;
                         }

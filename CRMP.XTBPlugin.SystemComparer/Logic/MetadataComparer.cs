@@ -10,26 +10,24 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
     public class MetadataComparer : ComparerBase
     {
-        private readonly List<string> _ignoreList = new List<string> { "MetadataId", "ColumnNumber", "PrivilegeId" };
-
-        private readonly List<string> _ignoreManagedList = new List<string> { "IsManaged", "CanBeChanged" };
-
         private readonly Configuration _configuration;
+
+        public MetadataComparer()
+        {
+            IgnoreList.Add("MetadataId");
+            IgnoreList.Add("ColumnNumber");
+            IgnoreList.Add("PrivilegeId");
+            IgnoreManagedList.Add("IsManaged");
+            IgnoreManagedList.Add("CanBeChanged");
+        }
 
         public MetadataComparer(Configuration configuration)
         {
             _configuration = configuration;
         }
 
-        public MetadataComparison Compare(string name, List<EntityMetadata> source, List<EntityMetadata> target)
-        {
-            MetadataComparison entities = new MetadataComparison(name, source, target, null);
-            BuildComparisons(entities, null, source, target);
 
-            return entities;
-        }
-
-        private void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
+        protected override void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source, object target)
         {
             //OnLogMessageRaised(new EventArgs());
             // Make sure at least one value is not null
@@ -94,17 +92,17 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                         originalParent.Children.Add(parent);
                     }
 
-                    if (IsSimpleType(type) && !_ignoreList.Any(s => parent.Name.Contains(s)))
+                    if (IsSimpleType(type) && !IgnoreList.Any(s => parent.Name.Contains(s)))
                     {
                         // for simple types just compare values
-                        if (parent.Name == "AutoNumberFormat" && 
-                            (source == null || string.IsNullOrEmpty(source.ToString())) && 
+                        if (parent.Name == "AutoNumberFormat" &&
+                            (source == null || string.IsNullOrEmpty(source.ToString())) &&
                             (target == null || string.IsNullOrEmpty(target.ToString()))
                             )
                         {
                             // Ignore AutonumberFormat when null or Empty String
                         }
-                        else if (_configuration.IgnoreManagedState && _ignoreManagedList.Any(s => parent.Name.Contains(s)))
+                        else if (_configuration.IgnoreManagedState && IgnoreManagedList.Any(s => parent.Name.Contains(s)))
                         {
                             // ignore IsManaged
                         }

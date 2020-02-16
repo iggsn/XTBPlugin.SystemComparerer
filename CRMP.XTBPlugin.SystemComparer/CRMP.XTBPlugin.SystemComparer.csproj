@@ -140,23 +140,26 @@
     <PackageReference Include="ILRepack">
       <Version>2.0.18</Version>
     </PackageReference>
+    <PackageReference Include="jacobslusser.ScintillaNET">
+      <Version>3.6.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.ApplicationInsights">
-      <Version>2.12.0</Version>
+      <Version>2.12.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies">
-      <Version>9.0.2.22</Version>
+      <Version>9.0.2.23</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Deployment">
-      <Version>9.0.2.22</Version>
+      <Version>9.0.2.23</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.Workflow">
-      <Version>9.0.2.22</Version>
+      <Version>9.0.2.23</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly">
-      <Version>9.1.0.26</Version>
+      <Version>9.1.0.38</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CrmSdk.XrmTooling.WpfControls">
-      <Version>9.1.0.26</Version>
+      <Version>9.1.0.38</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel">
       <Version>6.1.7600.16394</Version>
@@ -165,7 +168,7 @@
       <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="MscrmTools.Xrm.Connection">
-      <Version>1.2019.11.27</Version>
+      <Version>1.2020.2.30</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
@@ -176,7 +179,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="XrmToolBoxPackage">
-      <Version>1.2019.11.35</Version>
+      <Version>1.2020.2.36</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

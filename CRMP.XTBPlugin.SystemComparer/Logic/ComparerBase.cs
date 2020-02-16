@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using CRMP.XTBPlugin.SystemComparer.DataModel;
 using Microsoft.Xrm.Sdk.Metadata;
 
 namespace CRMP.XTBPlugin.SystemComparer.Logic
 {
-    public class ComparerBase
+    public abstract class ComparerBase
     {
+        protected readonly List<string> IgnoreList = new List<string>();
+
+        protected readonly List<string> IgnoreManagedList = new List<string>();
+
+        public MetadataComparison Compare<TObject>(string name, List<TObject> source, List<TObject> target)
+        {
+            MetadataComparison entities = new MetadataComparison(name, source, target, null);
+            BuildComparisons(entities, null, source, target);
+
+            return entities;
+        }
+
+        protected abstract void BuildComparisons(MetadataComparison parent, PropertyInfo prop, object source,
+            object target);
+
         protected static Type GetCommonType(object source, object target)
         {
             Type type = null;
@@ -85,8 +103,8 @@ namespace CRMP.XTBPlugin.SystemComparer.Logic
                 SyncOptionMetadata(ref source, ref target);
                 return;
             }
-            
-            if(typeof(ManyToManyRelationshipMetadata).IsAssignableFrom(elementType))
+
+            if (typeof(ManyToManyRelationshipMetadata).IsAssignableFrom(elementType))
             {
                 SyncManyToManyRelationshipMetadata(ref source, ref target);
                 return;
